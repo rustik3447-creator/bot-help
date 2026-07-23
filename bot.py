@@ -53,8 +53,8 @@ def start(message):
         reply_markup=get_main_menu()
     )
 
-# Повернення до головного меню
-@bot.message_handler(func=lambda message: message.text in ["🔙 Головне меню", "/menu"])
+# Повернення до головного меню (по гнучкому пошуку ключових слів)
+@bot.message_handler(func=lambda message: message.text and ("Головне меню" in message.text or message.text == "/menu"))
 def back_to_main_menu(message):
     bot.send_message(
         message.chat.id, 
@@ -62,9 +62,9 @@ def back_to_main_menu(message):
         reply_markup=get_main_menu()
     )
 
-# --- Розділ: ст. 173-2 КУпАП ---
+# --- Розділ: ст. 173-2 КУпАП (по гнучкому пошуку ключових слів) ---
 
-@bot.message_handler(func=lambda message: message.text == "⚖️ ст.173-2 Домашнє насильство")
+@bot.message_handler(func=lambda message: message.text and ("173-2" in message.text or "Домашнє насильство" in message.text))
 def violence_category_select(message):
     bot.send_message(
         message.chat.id, 
@@ -73,7 +73,7 @@ def violence_category_select(message):
     )
 
 # 1. Фізичне насильство
-@bot.message_handler(func=lambda message: message.text == "👊 Фізичне насильство")
+@bot.message_handler(func=lambda message: message.text and "Фізичне" in message.text)
 def physical_violence_info(message):
     fabula_text = (
         "⚖️ **Фабула правопорушення (ч. 1 ст. 173-2 КУпАП — Фізичне насильство):**\n\n"
@@ -87,7 +87,7 @@ def physical_violence_info(message):
     bot.send_message(message.chat.id, fabula_text, parse_mode="Markdown")
 
 # 2. Психологічне насильство
-@bot.message_handler(func=lambda message: message.text == "🗣 Психологічне насильство")
+@bot.message_handler(func=lambda message: message.text and "Психологічне" in message.text)
 def psychological_violence_info(message):
     fabula_text = (
         "⚖️ **Фабула правопорушення (ч. 1 ст. 173-2 КУпАП — Психологічне насильство):**\n\n"
@@ -101,7 +101,7 @@ def psychological_violence_info(message):
     bot.send_message(message.chat.id, fabula_text, parse_mode="Markdown")
 
 # 3. Економічне насильство
-@bot.message_handler(func=lambda message: message.text == "💰 Економічне насильство")
+@bot.message_handler(func=lambda message: message.text and "Економічне" in message.text)
 def economic_violence_info(message):
     fabula_text = (
         "⚖️ **Фабули правопорушення (ч. 1 ст. 173-2 КУпАП — Економічне насильство):**\n\n"
@@ -125,14 +125,14 @@ def economic_violence_info(message):
 
 # --- Інші розділи головного меню ---
 
-@bot.message_handler(func=lambda message: message.text == "📚 База знань")
+@bot.message_handler(func=lambda message: message.text and "База знань" in message.text)
 def knowledge_base(message):
     bot.send_message(
         message.chat.id, 
         "Тут розміщені корисні інструкції, нормативно-правові акти та зразки документів."
     )
 
-@bot.message_handler(func=lambda message: message.text == "ℹ️ Про бота")
+@bot.message_handler(func=lambda message: message.text and "Про бота" in message.text)
 def about_bot(message):
     bot.send_message(
         message.chat.id,
@@ -143,7 +143,7 @@ def about_bot(message):
 
 # --- Зв'язок з адміном / куратором ---
 
-@bot.message_handler(func=lambda message: message.text == "❓ Поставити питання")
+@bot.message_handler(func=lambda message: message.text and ("Поставити питання" in message.text or "Заставити питання" in message.text))
 def ask_question_start(message):
     msg = bot.send_message(
         message.chat.id, 
