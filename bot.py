@@ -39,15 +39,16 @@ def get_violence_menu():
     markup.add("🔙 Головне меню")
     return markup
 
-# 3. Підменю "Постанови / Накази"
+# 3. Підменю "Постанови / Накази / Закони" (Додано ЗУ Про охорону дитинства)
 def get_docs_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+    markup.add("👶 ЗУ Про охорону дитинства")
     markup.add("📋 Наказ № 663", "📋 Наказ № 1646")
     markup.add("🏛 Постанова № 1245", "🏛 Постанова № 70")
     markup.add("📋 Наказ № 685/1013", "🔙 Головне меню")
     return markup
 
-# 4. Підменю "Алгоритми" (Оновлено)
+# 4. Підменю "Алгоритми"
 def get_algorithms_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     markup.add("🚨 Алгоритм дій у разі булінгу")
@@ -188,7 +189,7 @@ def bullying_algorithm_info(message):
     bot.send_message(message.chat.id, alg_text_1, parse_mode="Markdown")
     bot.send_message(message.chat.id, alg_text_2, parse_mode="Markdown")
 
-# 2. Алгоритм дій при виявленні зброї/ВНП (Новий)
+# 2. Алгоритм дій при виявленні зброї/ВНП (Оновлено)
 @bot.message_handler(func=lambda message: message.text and "виявленні ВНП" in message.text)
 def explosives_algorithm_info(message):
     alg_text_1 = (
@@ -215,8 +216,8 @@ def explosives_algorithm_info(message):
         "───────────────────\n\n"
         "4️⃣ **Негайне повідомлення**\n"
         "Повідомити:\n"
-        "• чергову частину поліції (102 або через службовий зв’язок);\n"
         "• адміністрацію закладу освіти;\n"
+        "• чергову частину поліції (102 або через службовий зв’язок);\n"
         "• безпосереднього керівника (за службовим порядком).\n\n"
         "📞 **Під час повідомлення необхідно вказати:**\n"
         "• точну адресу;\n"
@@ -240,7 +241,11 @@ def explosives_algorithm_info(message):
         "• по можливості визначити свідків, які можуть пояснити, хто знайшов предмет або хто його залишив.\n\n"
         "───────────────────\n\n"
         "7️⃣ **Зустріч спеціалізованих служб**\n"
-        "Після прибуття вибухотехнічної служби, слідчо-оперативної групи, рятувальників (за потреби) інспектор:\n"
+        "Після прибуття:\n"
+        "• вибухотехнічної служби;\n"
+        "• слідчо-оперативної групи;\n"
+        "• рятувальників (за потреби),\n\n"
+        "інспектор:\n"
         "• показує місце виявлення;\n"
         "• повідомляє всі відомі обставини;\n"
         "• передає інформацію про свідків.\n\n"
@@ -276,9 +281,17 @@ def explosives_algorithm_info(message):
 def docs_category_select(message):
     bot.send_message(
         message.chat.id, 
-        "Оберіть потрібну постанову або наказ для перегляду та переходу за посиланням:", 
+        "Оберіть потрібну постанову, наказ або закон для перегляду та переходу за посиланням:", 
         reply_markup=get_docs_menu()
     )
+
+# 0. ЗУ Про охорону дитинства (Нове)
+@bot.message_handler(func=lambda message: message.text and "охорону дитинства" in message.text.lower())
+def doc_child_protection_info(message):
+    text = "👶 **Закон України «Про охорону дитинства»**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("🔗 Відкрити ЗУ «Про охорону дитинства» на Zakon.Rada", url="https://zakon.rada.gov.ua/laws/show/2402-14#Text"))
+    bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
 
 # 1. Наказ № 663
 @bot.message_handler(func=lambda message: message.text and "663" in message.text)
@@ -485,7 +498,7 @@ def article_173_info(message):
         "📌 **Приклад 1 (Висловлювання нецензурною лайкою):**\n"
         "01.01.2015 о 20 год. 05 хв. гр. Іванов Іван Іванович, перебуваючи в стані алкогольного сп’яніння, у громадському місці біля буд. № 76/1 по просп. Миру в Хмельницькому, висловлювався нецензурною лайкою на адресу гр. Петрової Н.П. (або перехожих), чим порушував громадський порядок і спокій громадян.\n\n"
         "───────────────────\n\n"
-        "📌 **Приклад 2 (Справляння природних потреб у громадському місці):**\n"
+        "📌 **Приклад 2 (Справляння природних потреба у громадському місці):**\n"
         "10.09.2015 о 20 год. 05 хв. гр. Іванов Іван Іванович в м. Хмельницькому по вул. Проскурівського підпілля, 15, справляв природні потреби поблизу дверей офісу \"Сонечко\", чим своїми діями порушував громадський порядок."
     )
     bot.send_message(message.chat.id, fabula_text, parse_mode="Markdown")
