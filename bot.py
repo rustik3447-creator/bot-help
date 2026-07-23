@@ -22,12 +22,12 @@ def run_flask():
 
 # --- Клавіатури ---
 
-# 1. Головне меню (Оновлено: додано ст. 173 Дрібне хуліганство)
+# 1. Головне меню (Оновлено: додано "📜 Постанови/Накази")
 def get_main_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     markup.add("⚖️ ст. 173-2 Домашнє насильство", "🚸 ст. 184 Невиконання обов'язків")
     markup.add("🏫 ст. 173-4 Булінг", "🤪 ст. 173 Дрібне хуліганство")
-    markup.add("ℹ️ Про бота")
+    markup.add("📜 Постанови/Накази", "ℹ️ Про бота")
     return markup
 
 # 2. Підменю видів насильства
@@ -38,7 +38,15 @@ def get_violence_menu():
     markup.add("🔙 Головне меню")
     return markup
 
-# 3. Кнопка завершення чату
+# 3. Підменю "Постанови / Накази"
+def get_docs_menu():
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+    markup.add("📋 Наказ № 663", "📋 Наказ № 1646")
+    markup.add("🏛 Постанова № 1245", "🏛 Постанова № 70")
+    markup.add("📋 Наказ № 685/1013", "🔙 Головне меню")
+    return markup
+
+# 4. Кнопка завершення чату
 def get_finish_keyboard():
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton("❌ Завершити діалог", callback_data="finish_chat"))
@@ -64,6 +72,58 @@ def back_to_main_menu(message):
         "Повертаємось до головного меню:", 
         reply_markup=get_main_menu()
     )
+
+
+# --- Розділ: Постанови та Накази ---
+
+@bot.message_handler(func=lambda message: message.text and ("Постанови/Накази" in message.text or "Постанови" in message.text or "Накази" in message.text))
+def docs_category_select(message):
+    bot.send_message(
+        message.chat.id, 
+        "Оберіть потрібну постанову або наказ для перегляду та переходу за посиланням:", 
+        reply_markup=get_docs_menu()
+    )
+
+# 1. Наказ № 663
+@bot.message_handler(func=lambda message: message.text and "663" in message.text)
+def doc_663_info(message):
+    text = "📋 **Наказ МВС України № 663**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("🔗 Відкрити Наказ № 663 на Zakon.Rada", url="https://zakon.rada.gov.ua/laws/show/z1590-24#Text"))
+    bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
+
+# 2. Наказ № 1646
+@bot.message_handler(func=lambda message: message.text and "1646" in message.text)
+def doc_1646_info(message):
+    text = "📋 **Наказ МОН України № 1646**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("🔗 Відкрити Наказ № 1646 на Zakon.Rada", url="https://zakon.rada.gov.ua/laws/show/z0111-20#Text"))
+    bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
+
+# 3. Постанова № 1245
+@bot.message_handler(func=lambda message: message.text and "1245" in message.text)
+def doc_1245_info(message):
+    text = "🏛 **Постанова КМУ № 1245**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("🔗 Відкрити Постанову № 1245 на Zakon.Rada", url="https://zakon.rada.gov.ua/laws/show/1245-2024-%D0%BF#Text"))
+    bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
+
+# 4. Постанова № 70
+@bot.message_handler(func=lambda message: message.text and "70" in message.text)
+def doc_70_info(message):
+    text = "🏛 **Постанова КМУ № 70**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("🔗 Відкрити Постанову № 70 на Zakon.Rada", url="https://zakon.rada.gov.ua/laws/show/70-2026-%D0%BF#Text"))
+    bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
+
+# 5. Наказ № 685/1013
+@bot.message_handler(func=lambda message: message.text and ("685" in message.text or "1013" in message.text))
+def doc_685_1013_info(message):
+    text = "📋 **Спільний наказ № 685/1013**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("🔗 Відкрити Наказ № 685/1013 на Zakon.Rada", url="https://zakon.rada.gov.ua/laws/show/z1583-23#Text"))
+    bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
+
 
 # --- Розділ: ст. 173-2 КУпАП ---
 
@@ -214,7 +274,7 @@ def article_173_4_info(message):
         "───────────────────\n\n"
         "⚖️ **Приклад фабули за ч. 5 ст. 173-4 КУпАП:**\n"
         "_Неповідомлення керівником закладу освіти про булінг_\n\n"
-        "«Громадянин(ка) [ПІБ директора], обіймаючи посаду керівника закладу освіти [назва школи, адреса], станом на [дата] в порушення вимог законодавства не повідомив(-ла) уповноважений підрозділ органов Національної поліції України про випадок булінгу (цькування) стосовно учня [ПІБ], який мав місце [дата, час] у зазначеному закладі освіти, чим вчинив(-ла) адміністративне правопорушення, передбачене ч. 5 ст. 173-4 КУпАП»."
+        "«Громадянин(ка) [ПІБ директора], обіймаючи посаду керівника закладу освіти [назва школи, адреса], станом на [дата] в порушення вимог законодавства не повідомив(-ла) уповноважений підрозділ органів Національної поліції України про випадок булінгу (цькування) стосовно учня [ПІБ], який мав місце [дата, час] у зазначеному закладі освіти, чим вчинив(-ла) адміністративне правопорушення, передбачене ч. 5 ст. 173-4 КУпАП»."
     )
     bot.send_message(message.chat.id, fabula_text, parse_mode="Markdown")
 
@@ -241,8 +301,8 @@ def article_173_info(message):
 def about_bot(message):
     bot.send_message(
         message.chat.id,
-        "Цей бот створений для швидкого отримання правової інформації та "
-        "зразків фабул за ст. 173 КУпАП, ст. 173-2 КУпАП, ст. 173-4 КУпАП та ст. 184 КУпАП."
+        "Цей бот створений для швидкого отримання правової інформації, "
+        "зразків фабул (ст. 173, 173-2, 173-4, 184 КУпАП) та нормативно-правових актів."
     )
 
 
