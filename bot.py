@@ -1,4 +1,4 @@
-import os
+import os  
 import time
 import threading
 from flask import Flask
@@ -6,8 +6,8 @@ import telebot
 from telebot import types
 
 # --- Налаштування ---
-TOKEN = "8785665273:AAFikmkrKRnR9rYr4RoiSicvgDfGqz-VSeY"  # Вкажіть токен вашого бота
-ADMIN_ID = "1014079912"    # Вкажіть ваш Telegram ID (або ID куратора)
+TOKEN = "8785665273:AAFikmkrKRnR9rYr4RoiSicvgDfGqz-VSeY"  # Токен вашого бота
+ADMIN_ID = "1014079912"    # Telegram ID куратора / адміна
 
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
@@ -25,20 +25,20 @@ def run_flask():
 # 1. Головне меню
 def get_main_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-    markup.add(" ст.173-2 Домашнє насильство", " База знань", " Заставити питання", " Про бота")
+    markup.add("⚖️ ст.173-2 Домашнє насильство", "📚 База знань", "❓ Поставити питання", "ℹ️ Про бота")
     return markup
 
 # 2. Підменю видів насильства
 def get_violence_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-    markup.add(" Фізичне насильство", " Психологічне насильство")
-    markup.add(" Економічне насильство", " 🔙 Головне меню")
+    markup.add("👊 Фізичне насильство", "🗣 Психологічне насильство")
+    markup.add("💰 Економічне насильство", "🔙 Головне меню")
     return markup
 
 # 3. Кнопка завершення чату
 def get_finish_keyboard():
     markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton(" Завершити діалог", callback_data="finish_chat"))
+    markup.add(types.InlineKeyboardButton("❌ Завершити діалог", callback_data="finish_chat"))
     return markup
 
 
@@ -48,13 +48,13 @@ def get_finish_keyboard():
 def start(message):
     bot.send_message(
         message.chat.id, 
-        f"Вітаю, {message.from_user.first_name}! \n"
+        f"Вітаю, {message.from_user.first_name}!\n"
         f"Я ваш робочий помічник. Оберіть потрібний розділ меню нижче:", 
         reply_markup=get_main_menu()
     )
 
 # Повернення до головного меню
-@bot.message_handler(func=lambda message: message.text == " 🔙 Головне меню")
+@bot.message_handler(func=lambda message: message.text in ["🔙 Головне меню", "/menu"])
 def back_to_main_menu(message):
     bot.send_message(
         message.chat.id, 
@@ -64,16 +64,16 @@ def back_to_main_menu(message):
 
 # --- Розділ: ст. 173-2 КУпАП ---
 
-@bot.message_handler(func=lambda message: message.text == " ст.173-2 Домашнє насильство")
+@bot.message_handler(func=lambda message: message.text == "⚖️ ст.173-2 Домашнє насильство")
 def violence_category_select(message):
     bot.send_message(
         message.chat.id, 
-        " Оберіть вид домашнього насильства для перегляду фабули та матеріалів:", 
+        "Оберіть вид домашнього насильства для перегляду фабули та матеріалів:", 
         reply_markup=get_violence_menu()
     )
 
 # 1. Фізичне насильство
-@bot.message_handler(func=lambda message: message.text == " Фізичне насильство")
+@bot.message_handler(func=lambda message: message.text == "👊 Фізичне насильство")
 def physical_violence_info(message):
     fabula_text = (
         "⚖️ **Фабула правопорушення (ч. 1 ст. 173-2 КУпАП — Фізичне насильство):**\n\n"
@@ -87,7 +87,7 @@ def physical_violence_info(message):
     bot.send_message(message.chat.id, fabula_text, parse_mode="Markdown")
 
 # 2. Психологічне насильство
-@bot.message_handler(func=lambda message: message.text == " Психологічне насильство")
+@bot.message_handler(func=lambda message: message.text == "🗣 Психологічне насильство")
 def psychological_violence_info(message):
     fabula_text = (
         "⚖️ **Фабула правопорушення (ч. 1 ст. 173-2 КУпАП — Психологічне насильство):**\n\n"
@@ -101,7 +101,7 @@ def psychological_violence_info(message):
     bot.send_message(message.chat.id, fabula_text, parse_mode="Markdown")
 
 # 3. Економічне насильство
-@bot.message_handler(func=lambda message: message.text == " Економічне насильство")
+@bot.message_handler(func=lambda message: message.text == "💰 Економічне насильство")
 def economic_violence_info(message):
     fabula_text = (
         "⚖️ **Фабули правопорушення (ч. 1 ст. 173-2 КУпАП — Економічне насильство):**\n\n"
@@ -125,14 +125,14 @@ def economic_violence_info(message):
 
 # --- Інші розділи головного меню ---
 
-@bot.message_handler(func=lambda message: message.text == " База знань")
+@bot.message_handler(func=lambda message: message.text == "📚 База знань")
 def knowledge_base(message):
     bot.send_message(
         message.chat.id, 
-        " Тут розміщені корисні інструкції, нормативно-правові акти та зразки документів."
+        "Тут розміщені корисні інструкції, нормативно-правові акти та зразки документів."
     )
 
-@bot.message_handler(func=lambda message: message.text == " Про бота")
+@bot.message_handler(func=lambda message: message.text == "ℹ️ Про бота")
 def about_bot(message):
     bot.send_message(
         message.chat.id,
@@ -143,11 +143,11 @@ def about_bot(message):
 
 # --- Зв'язок з адміном / куратором ---
 
-@bot.message_handler(func=lambda message: message.text == " Заставити питання")
+@bot.message_handler(func=lambda message: message.text == "❓ Поставити питання")
 def ask_question_start(message):
     msg = bot.send_message(
         message.chat.id, 
-        " Опишіть ваше питання або ситуацію одним текстовим повідомленням.\n"
+        "Опишіть ваше питання або ситуацію одним текстовим повідомленням.\n"
         "Куратор отримає його та відповість вам у цьому чаті.", 
         reply_markup=types.ReplyKeyboardRemove()
     )
@@ -163,21 +163,21 @@ def send_to_admin(message):
     username = f"@{message.from_user.username}" if message.from_user.username else "без username"
     
     admin_text = (
-        f" Нове звернення | ID: {message.chat.id}\n"
-        f" Від: {first_name} ({username})\n\n"
-        f" **Текст звернення:**\n{message.text}"
+        f"Нове звернення | ID: {message.chat.id}\n"
+        f"Від: {first_name} ({username})\n\n"
+        f"**Текст звернення:**\n{message.text}"
     )
     
     try:
         bot.send_message(ADMIN_ID, admin_text, parse_mode="Markdown")
         bot.send_message(
             message.chat.id, 
-            " Ваше повідомлення надіслано куратору. Очікуйте на відповідь!", 
+            "Ваше повідомлення надіслано куратору. Очікуйте на відповідь!", 
             reply_markup=get_finish_keyboard()
         )
     except Exception as e:
         print(f"Помилка відправки: {e}")
-        bot.send_message(message.chat.id, " Не вдалося відправити повідомлення. Перевірте налаштування ADMIN_ID.")
+        bot.send_message(message.chat.id, "Не вдалося відправити повідомлення. Перевірте налаштування ADMIN_ID.")
 
 
 # --- Обробка завершення та пересилки відповідей ---
@@ -205,22 +205,22 @@ def admin_reply(message):
             user_id = text.split("ID: ")[1].split("\n")[0].strip()
             bot.send_message(
                 user_id, 
-                f" **Відповідь куратора:**\n{message.text}", 
+                f"**Відповідь куратора:**\n{message.text}", 
                 parse_mode="Markdown",
                 reply_markup=get_finish_keyboard()
             )
-            bot.send_message(ADMIN_ID, " Відповідь успішно надіслана користувачу.")
+            bot.send_message(ADMIN_ID, "Відповідь успішно надіслана користувачу.")
         else:
-            bot.send_message(ADMIN_ID, " Не вдалося знайти ID користувача у повідомленні, на яке ви відповіли.")
+            bot.send_message(ADMIN_ID, "Не вдалося знайти ID користувача у повідомленні, на яке ви відповіли.")
     except Exception as e:
-        bot.send_message(ADMIN_ID, f" Помилка надсилання: {e}")
+        bot.send_message(ADMIN_ID, f"Помилка надсилання: {e}")
 
 # Пересилка уточнення від користувача до адміна
 @bot.message_handler(func=lambda message: str(message.chat.id) != str(ADMIN_ID) and message.reply_to_message)
 def user_reply(message):
     bot.send_message(
         ADMIN_ID, 
-        f" Уточнення від користувача (ID: {message.chat.id}):\n\n{message.text}"
+        f"Уточнення від користувача (ID: {message.chat.id}):\n\n{message.text}"
     )
     bot.send_message(
         message.chat.id, 
@@ -232,12 +232,10 @@ def user_reply(message):
 # --- Запуск бота та веб-сервера ---
 
 if __name__ == "__main__":
-    # 1. Запускаємо Flask у фоновому потоці
     flask_thread = threading.Thread(target=run_flask)
     flask_thread.daemon = True
     flask_thread.start()
 
-    # 2. Запуск бота з автовідновленням під час обривів
     while True:
         try:
             print("Бот запущено...")
