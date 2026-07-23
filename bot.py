@@ -22,10 +22,11 @@ def run_flask():
 
 # --- Клавіатури ---
 
-# 1. Головне меню
+# 1. Головне меню (Оновлено: замість "Поставити питання" додано ст. 184)
 def get_main_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-    markup.add("⚖️ ст.173-2 Домашнє насильство", "📚 База знань", "❓ Поставити питання", "ℹ️ Про бота")
+    markup.add("⚖️ ст. 173-2 Домашнє насильство", "🚸 ст. 184 Невиконання обов'язків")
+    markup.add("📚 База знань", "ℹ️ Про бота")
     return markup
 
 # 2. Підменю видів насильства
@@ -179,6 +180,23 @@ def child_violence_info(message):
     bot.send_message(message.chat.id, fabula_text_2, parse_mode="Markdown")
 
 
+# --- Розділ: ст. 184 КУпАП (Новий розділ) ---
+
+@bot.message_handler(func=lambda message: message.text and ("184" in message.text or "обов'язків" in message.text.lower()))
+def article_184_info(message):
+    fabula_text = (
+        "🚸 **НЕВИКОНАННЯ БАТЬКАМИ АБО ОСОБАМИ, ЩО ЇХ ЗАМІНЮЮТЬ, ОБОВ'ЯЗКІВ ЩОДО ВИХОВАННЯ ДІТЕЙ (ст. 184 КУпАП)**\n\n"
+        "⚖️ **Приклад фабули за ч. 1 ст. 184 КУпАП:**\n"
+        "_Ухилення батьків або осіб, які їх замінюють, від виконання передбачених законодавством обов’язків щодо забезпечення необхідних умов життя, навчання та виховання малолітніх та/або неповнолітніх дітей_\n\n"
+        "Громадянин Петров І.О., будучи батьком малолітньої дитини віком 13 років, ухилявся від виконання передбачених законодавством обов'язків щодо її виховання та належного контролю за поведінкою, що сприяло вчиненню дитиною домашнього насильства відносно своєї матері, чим вчинив правопорушення, передбачене ч. 1 ст. 184 КУпАП.\n\n"
+        "───────────────────\n\n"
+        "⚖️ **Приклад фабули за ч. 3 ст. 184 КУпАП:**\n"
+        "_Вчинення неповнолітніми віком від чотирнадцяти до шістнадцяти років правопорушення, відповідальність за яке передбачено цим Кодексом, крім порушень, передбачених ч.3 або ч.4 ст. 173-4 цього Кодексу_\n\n"
+        "Громадянка Петрова О.О., будучи матір'ю неповнолітнього Петрова І.І., 2011 року народження, який не досяг 16-річного віку, 15.06.2026 вчинив домашнє насильство відносно своєї сестри, а саме умисні дії психологічного характеру: ображав словесно, погрожував вбити, чим завдав їй психологічних страждань, унаслідок чого завдано шкоди психічному здоров’ю Петровій С.О., відповідальність за яке передбачена ст. 173-2 КУпАП, чим вчинила правопорушення, передбачене ч. 3 ст. 184 КУпАП."
+    )
+    bot.send_message(message.chat.id, fabula_text, parse_mode="Markdown")
+
+
 # --- Інші розділи головного меню ---
 
 @bot.message_handler(func=lambda message: message.text and "База знань" in message.text)
@@ -193,47 +211,8 @@ def about_bot(message):
     bot.send_message(
         message.chat.id,
         "Цей бот створений для швидкого отримання правової інформації, "
-        "зразків фабул за ст. 173-2 КУпАП та зв’язку з куратором."
+        "зразків фабул за ст. 173-2 КУпАП та ст. 184 КУпАП."
     )
-
-
-# --- Зв'язок з адміном / куратором ---
-
-@bot.message_handler(func=lambda message: message.text and ("Поставити питання" in message.text or "Заставити питання" in message.text))
-def ask_question_start(message):
-    msg = bot.send_message(
-        message.chat.id, 
-        "Опишіть ваше питання або ситуацію одним текстовим повідомленням.\n"
-        "Куратор отримає його та відповість вам у цьому чаті.", 
-        reply_markup=types.ReplyKeyboardRemove()
-    )
-    bot.register_next_step_handler(msg, send_to_admin)
-
-def send_to_admin(message):
-    if not message.text:
-        msg = bot.send_message(message.chat.id, "Будь ласка, надішліть саме текстове повідомлення.")
-        bot.register_next_step_handler(msg, send_to_admin)
-        return
-
-    first_name = message.from_user.first_name or "Користувач"
-    username = f"@{message.from_user.username}" if message.from_user.username else "без username"
-    
-    admin_text = (
-        f"Нове звернення | ID: {message.chat.id}\n"
-        f"Від: {first_name} ({username})\n\n"
-        f"**Текст звернення:**\n{message.text}"
-    )
-    
-    try:
-        bot.send_message(ADMIN_ID, admin_text, parse_mode="Markdown")
-        bot.send_message(
-            message.chat.id, 
-            "Ваше повідомлення надіслано куратору. Очікуйте на відповідь!", 
-            reply_markup=get_finish_keyboard()
-        )
-    except Exception as e:
-        print(f"Помилка відправки: {e}")
-        bot.send_message(message.chat.id, "Не вдалося відправити повідомлення. Перевірте налаштування ADMIN_ID.")
 
 
 # --- Обробка завершення та пересилки відповідей ---
