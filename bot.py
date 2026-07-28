@@ -39,12 +39,15 @@ def get_violence_menu():
     markup.add("🔙 Головне меню")
     return markup
 
-# 3. Підменю "Постанови / Накази / Закони"
+# 3. Підменю "Постанови / Накази / Закони / Кодекси"
 def get_docs_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-    markup.add("👶 ЗУ Про охорону дитинства")
-    markup.add("📋 Наказ № 663", "📋 Наказ № 1646")
+    markup.add("⚖️ КУпАП", "⚖️ Кримінальний кодекс")
+    markup.add("⚖️ Сімейний кодекс", "👮 ЗУ Про Національну поліцію")
+    markup.add("🎓 ЗУ Про освіту", "🏫 ЗУ Про загальну середню освіту")
+    markup.add("👶 ЗУ Про охорону дитинства", "🏛 Постанова № 684")
     markup.add("🏛 Постанова № 1245", "🏛 Постанова № 70")
+    markup.add("📋 Наказ № 663", "📋 Наказ № 1646")
     markup.add("📋 Наказ № 685/1013", "🔙 Головне меню")
     return markup
 
@@ -376,7 +379,7 @@ def domestic_violence_algorithm_info(message):
         "📌 **Що повинен пам’ятати інспектор СОБ:**\n\n"
         "• Інтереси та безпека дитини є пріоритетом.\n"
         "• Не можна змушувати дитину багаторазово повторювати розповідь про пережите — це може завдати додаткової психологічної травми.\n"
-        "• Не обіцяйте дитині того, чого не можете гарантувати (наприклад, що кривдника точно покарають), але поясніть, що її повідомлення буде розглянуто і будут вжиті необхідні заходи.\n"
+        "• Не обіцяйте дитині того, чого не можете гарантувати (наприклад, що кривдника точно покарають), але поясніть, що її повідомлення буде розглянуто і будуть вжиті необхідні заходи.\n"
         "• Якщо є підстави вважати, що дитині загрожує небезпека, реагування має бути невідкладним із залученням відповідних підрозділів поліції та служб захисту дітей."
     )
 
@@ -384,17 +387,65 @@ def domestic_violence_algorithm_info(message):
     bot.send_message(message.chat.id, alg_text_2, parse_mode="Markdown")
 
 
-# --- Розділ: Постанови та Накази ---
+# --- Розділ: Постанови, Накази, Кодекси ---
 
 @bot.message_handler(func=lambda message: message.text and ("Постанови/Накази" in message.text or "Постанови" in message.text or "Накази" in message.text))
 def docs_category_select(message):
     bot.send_message(
         message.chat.id, 
-        "Оберіть потрібну постанову, наказ або закон для перегляду та переходу за посиланням:", 
+        "Оберіть потрібну постанову, наказ, закон або кодекс для перегляду та переходу за посиланням:", 
         reply_markup=get_docs_menu()
     )
 
-# 0. ЗУ Про охорону дитинства
+# 0.1 КУпАП
+@bot.message_handler(func=lambda message: message.text and "купап" in message.text.lower())
+def doc_kupap_info(message):
+    text = "⚖️ **Кодекс України про адміністративні правопорушення (КУпАП)**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("🔗 Відкрити КУпАП на Zakon.Rada", url="https://zakon.rada.gov.ua/laws/show/8073-10#Text"))
+    bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
+
+# 0.2 Кримінальний кодекс України
+@bot.message_handler(func=lambda message: message.text and "кримінальний кодекс" in message.text.lower())
+def doc_kk_info(message):
+    text = "⚖️ **Кримінальний кодекс України (ККУ)**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("🔗 Відкрити Кримінальний кодекс на Zakon.Rada", url="https://zakon.rada.gov.ua/laws/show/2341-14#Text"))
+    bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
+
+# 0.3 Сімейний кодекс України
+@bot.message_handler(func=lambda message: message.text and "сімейний кодекс" in message.text.lower())
+def doc_family_code_info(message):
+    text = "⚖️ **Сімейний кодекс України**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("🔗 Відкрити Сімейний кодекс на Zakon.Rada", url="https://zakon.rada.gov.ua/laws/show/2947-14#Text"))
+    bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
+
+# 0.4 ЗУ Про Національну поліцію
+@bot.message_handler(func=lambda message: message.text and "національну поліцію" in message.text.lower())
+def doc_police_law_info(message):
+    text = "👮 **Закон України «Про Національну поліцію»**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("🔗 Відкрити ЗУ «Про Національну поліцію» на Zakon.Rada", url="https://zakon.rada.gov.ua/laws/show/580-19#Text"))
+    bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
+
+# 0.5 ЗУ Про освіту
+@bot.message_handler(func=lambda message: message.text and message.text == "🎓 ЗУ Про освіту")
+def doc_education_law_info(message):
+    text = "🎓 **Закон України «Про освіту»**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("🔗 Відкрити ЗУ «Про освіту» на Zakon.Rada", url="https://zakon.rada.gov.ua/laws/show/2145-19#Text"))
+    bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
+
+# 0.6 ЗУ Про повну загальну середню освіту
+@bot.message_handler(func=lambda message: message.text and "середню освіту" in message.text.lower())
+def doc_sec_education_law_info(message):
+    text = "🏫 **Закон України «Про повну загальну середню освіту»**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("🔗 Відкрити ЗУ «Про загальну середню освіту» на Zakon.Rada", url="https://zakon.rada.gov.ua/laws/show/651-14#Text"))
+    bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
+
+# 0.7 ЗУ Про охорону дитинства
 @bot.message_handler(func=lambda message: message.text and "охорону дитинства" in message.text.lower())
 def doc_child_protection_info(message):
     text = "👶 **Закон України «Про охорону дитинства»**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
@@ -402,7 +453,15 @@ def doc_child_protection_info(message):
     markup.add(types.InlineKeyboardButton("🔗 Відкрити ЗУ «Про охорону дитинства» на Zakon.Rada", url="https://zakon.rada.gov.ua/laws/show/2402-14#Text"))
     bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
 
-# 1. Наказ № 663
+# 1. Постанова № 684
+@bot.message_handler(func=lambda message: message.text and "684" in message.text)
+def doc_684_info(message):
+    text = "🏛 **Постанова КМУ № 684**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("🔗 Відкрити Постанову № 684 на Zakon.Rada", url="https://zakon.rada.gov.ua/laws/show/684-2017-%D0%BF#Text"))
+    bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
+
+# 2. Наказ № 663
 @bot.message_handler(func=lambda message: message.text and "663" in message.text)
 def doc_663_info(message):
     text = "📋 **Наказ МВС України № 663**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
@@ -410,7 +469,7 @@ def doc_663_info(message):
     markup.add(types.InlineKeyboardButton("🔗 Відкрити Наказ № 663 на Zakon.Rada", url="https://zakon.rada.gov.ua/laws/show/z1590-24#Text"))
     bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
 
-# 2. Наказ № 1646
+# 3. Наказ № 1646
 @bot.message_handler(func=lambda message: message.text and "1646" in message.text)
 def doc_1646_info(message):
     text = "📋 **Наказ МОН України № 1646**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
@@ -418,7 +477,7 @@ def doc_1646_info(message):
     markup.add(types.InlineKeyboardButton("🔗 Відкрити Наказ № 1646 на Zakon.Rada", url="https://zakon.rada.gov.ua/laws/show/z0111-20#Text"))
     bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
 
-# 3. Постанова № 1245
+# 4. Постанова № 1245
 @bot.message_handler(func=lambda message: message.text and "1245" in message.text)
 def doc_1245_info(message):
     text = "🏛 **Постанова КМУ № 1245**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
@@ -426,7 +485,7 @@ def doc_1245_info(message):
     markup.add(types.InlineKeyboardButton("🔗 Відкрити Постанову № 1245 на Zakon.Rada", url="https://zakon.rada.gov.ua/laws/show/1245-2024-%D0%BF#Text"))
     bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
 
-# 4. Постанова № 70
+# 5. Постанова № 70
 @bot.message_handler(func=lambda message: message.text and "70" in message.text)
 def doc_70_info(message):
     text = "🏛 **Постанова КМУ № 70**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
@@ -434,7 +493,7 @@ def doc_70_info(message):
     markup.add(types.InlineKeyboardButton("🔗 Відкрити Постанову № 70 на Zakon.Rada", url="https://zakon.rada.gov.ua/laws/show/70-2026-%D0%BF#Text"))
     bot.send_message(message.chat.id, text, parse_mode="Markdown", reply_markup=markup)
 
-# 5. Наказ № 685/1013
+# 6. Наказ № 685/1013
 @bot.message_handler(func=lambda message: message.text and ("685" in message.text or "1013" in message.text))
 def doc_685_1013_info(message):
     text = "📋 **Спільний наказ № 685/1013**\n\nДля перегляду повного тексту документа натисніть кнопку нижче:"
@@ -524,7 +583,7 @@ def child_violence_info(message):
         "м. Суми вчинив стосовно своєї дружини Іванової А. П. у присутності дитини Іванової О. І., 2018 р. н. "
         "домашнє насильство психологічного та фізичного характеру, що полягало в умисних діях, а саме штовхав, "
         "висловлювався нецензурною лайкою та погрожував фізичною розправою Івановій А. П., внаслідок чого завдано "
-        "шкоду психічному здоров’ю малолітній Івановій О. І. або внаслідок чого заподіяв шкоду психічному здоров’ю "
+        "шкоду психічному здоров’ю малолітній Івановій О. І. або внаслідок чого заподіял шкоду психічному здоров’ю "
         "малолітній Івановій О. І.\n\n"
         "📌 **Приклад 2:**\n"
         "01.01.2026 приблизно о 20 год. 15 хв. гр. Іванов Іван Іванович, знаходячись з ознаками алкогольного сп’яніння "
@@ -620,7 +679,7 @@ def about_bot(message):
     bot.send_message(
         message.chat.id,
         "Цей бот створений для швидкого отримання правової інформації, "
-        "зразків фабул (ст. 173, 173-2, 173-4, 184 КУпАП), алгоритмів дій та нормативно-правових актів."
+        "зразків фабул (ст. 173, 173-2, 173-4, 184 КУпАП), алгоритмів дій, кодексів та нормативно-правових актів."
     )
 
 
