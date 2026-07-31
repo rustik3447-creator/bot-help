@@ -11,17 +11,20 @@ TOKEN = os.environ.get(
 )
 ADMIN_ID = 1014079912  # Ваш особистий Telegram ID
 
-# 📋 Список особистих Telegram ID людей, які будуть отримувати тривожні SOS в приватні повідомлення:
+# 📋 Список особистих Telegram ID людей, які отримують тривожні SOS в приватні повідомлення:
 SOS_RECIPIENTS = [
     1014079912,  # Ваш ID
     902469327,  # ID колеги
 ]
 
+# 👤 Кастомні імена для конкретних ID при надсиланні SOS
+CUSTOM_NAMES = {902469327: 'Могилка В.О. (старший з ОД)'}
+
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
 
-# Веб-сервер для утримання бота в активному стані на хостингу (Keep-Alive)
+# Веб-сервер для утримання бота в активному стані (Keep-Alive)
 @app.route('/')
 def home():
   return 'Бот працює!'
@@ -43,7 +46,7 @@ def get_main_menu():
   markup.add('🤪 ст. 173 Дрібне хуліганство', '🚬 ст. 175-1 Куріння')
   markup.add('📜 Постанови/Накази', '🧠 Алгоритми')
   markup.add('ℹ️ Про бота')
-  markup.add('🚨 SOS (ТРИВОГА)')  # Кнопка SOS
+  markup.add('🚨 SOS (ТРИВОГА)')
   return markup
 
 
@@ -135,36 +138,48 @@ def back_to_main_menu(message):
 )
 def handle_sos_alert(message):
   user = message.from_user
+
+  # Перевірка кастомного імені за ID
+  if user.id in CUSTOM_NAMES:
+    sender_name = CUSTOM_NAMES[user.id]
+  else:
+    full_name = f'{user.first_name} {user.last_name or ""}'.strip()
+    sender_name = full_name if full_name else 'Невідомий користувач'
+
   username_str = f'@{user.username}' if user.username else 'не вказано'
 
-  # Текст повідомлення, яке прийде в особисті чати
+  # Текст сповіщення (HTML)
   sos_text = (
-      '🚨 **УВАГА! СИГНАЛ ТРИВОГИ (SOS)!** 🚨\n\n'
-      f'👤 **Відправник:** {user.first_name} {user.last_name or ""}\n'
-      f'🆔 **ID:** `{user.id}`\n'
-      f'🔗 **Профіль:** {username_str}\n\n'
-      '⚠️ **Потрібна термінова допомога або реагування!**'
+      '🚨 <b>УВАГА! СИГНАЛ ТРИВОГИ (SOS)!</b> 🚨\n\n'
+      f'👤 <b>Відправник:</b> {sender_name}\n'
+      f'🆔 <b>ID:</b> <code>{user.id}</code>\n'
+      f'🔗 <b>Профіль:</b> {username_str}\n\n'
+      '⚠️ <b>Потрібна термінова допомога або реагування!</b>'
   )
 
   successful_sends = 0
+  failed_sends = 0
 
-  # Надсилаємо в особистий чат кожному із списку SOS_RECIPIENTS
+  # Надсилаємо всім зі списку SOS_RECIPIENTS
   for recipient_id in SOS_RECIPIENTS:
     try:
-      bot.send_message(recipient_id, sos_text, parse_mode='Markdown')
+      bot.send_message(recipient_id, sos_text, parse_mode='HTML')
       successful_sends += 1
     except Exception as e:
-      print(
-          f'Не вдалося надіслати SOS для ID {recipient_id} (можливо, бот ще не'
-          f' запущений у приватних повідомленнях): {e}'
-      )
+      failed_sends += 1
+      print(f'❌ Помилка надсилання для ID {recipient_id}: {e}')
 
-  bot.reply_to(
-      message,
-      f'🚨 **Сигнал SOS успішно передано!**\nСповіщено в особисті чати осіб:'
-      f' {successful_sends}.',
-      parse_mode='Markdown',
+  status_msg = (
+      f'🚨 <b>Сигнал SOS успішно передано!</b>\n\n✅ Доставлено в приват:'
+      f' {successful_sends}'
   )
+  if failed_sends > 0:
+    status_msg += (
+        f'\n⚠️ Не доставлено: {failed_sends} (користувач має натиснути /start у'
+        ' боті)'
+    )
+
+  bot.reply_to(message, status_msg, parse_mode='HTML')
 
 
 # --- КУпАП: ст. 127 ---
