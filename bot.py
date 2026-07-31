@@ -11,6 +11,12 @@ TOKEN = os.environ.get(
 )
 ADMIN_ID = '1014079912'  # Telegram ID куратора / адміна
 
+# 📋 Список Telegram ID людей, які будуть отримувати тривожне повідомлення SOS
+SOS_RECIPIENTS = [
+    1014079912,  # Куратор
+    902469327,  # Отримує SOS та може надсилати
+]
+
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
@@ -36,7 +42,8 @@ def get_main_menu():
   markup.add("🚸 ст. 184 Невиконання обов'язків", '🏫 ст. 173-4 Булінг')
   markup.add('🤪 ст. 173 Дрібне хуліганство', '🚬 ст. 175-1 Куріння')
   markup.add('📜 Постанови/Накази', '🧠 Алгоритми')
-  markup.add('ℹ️ Про бота')
+  markup.add('📄 Рапорт', 'ℹ️ Про бота')
+  markup.add('🚨 SOS (ТРИВОГА)')  # Кнопка SOS
   return markup
 
 
@@ -118,6 +125,63 @@ def back_to_main_menu(message):
   bot.send_message(
       message.chat.id, 'Повертаємось до головного меню:', reply_markup=get_main_menu()
   )
+
+
+# --- РОЗДІЛ: SOS (СИГНАЛ ТРИВОГИ) ---
+
+
+@bot.message_handler(
+    func=lambda message: bool(message.text) and 'SOS' in message.text
+)
+def handle_sos_alert(message):
+  user = message.from_user
+  username_str = f'@{user.username}' if user.username else 'немає username'
+
+  sos_text = (
+      '🚨 **УВАГА! СИГНАЛ ТРИВОГИ (SOS)!** 🚨\n\n'
+      f'👤 **Відправник:** {user.first_name} {user.last_name or ""}\n'
+      f'🆔 **ID:** `{user.id}`\n'
+      f'🔗 **Профіль:** {username_str}\n\n'
+      '⚠️ **Потрібна термінова допомога або реагування!**'
+  )
+
+  successful_sends = 0
+  for recipient_id in SOS_RECIPIENTS:
+    try:
+      bot.send_message(recipient_id, sos_text, parse_mode='Markdown')
+      successful_sends += 1
+    except Exception as e:
+      print(f'Не вдалося надіслати SOS для {recipient_id}: {e}')
+
+  bot.reply_to(
+      message,
+      f'🚨 **Сигнал SOS успішно передано!**\nСповіщено осіб: {successful_sends}.',
+      parse_mode='Markdown',
+  )
+
+
+# --- РОЗДІЛ: РАПОРТ (ФОТО) ---
+
+
+@bot.message_handler(
+    func=lambda message: bool(message.text) and 'Рапорт' in message.text
+)
+def send_raport_photo(message):
+  photo_path = 'raport.jpg'  # Фото рапорту повинно лежати поруч із кодом
+  if os.path.exists(photo_path):
+    with open(photo_path, 'rb') as photo:
+      bot.send_photo(
+          chat_id=message.chat.id,
+          photo=photo,
+          caption='📄 **Зразок рапорту**\n\nОсь приклад правильного оформлення.',
+          parse_mode='Markdown',
+      )
+  else:
+    bot.send_message(
+        message.chat.id,
+        '⚠️ Файл зразка рапорту не знайдено. Перевірте наявність файлу'
+        " 'raport.jpg' на сервері.",
+    )
 
 
 # --- РОЗДІЛ: ст. 127 КУпАП ---
