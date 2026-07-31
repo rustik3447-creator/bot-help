@@ -9,22 +9,22 @@ from telebot import types
 TOKEN = os.environ.get(
     'BOT_TOKEN', '8785665273:AAFikmkrKRnR9rYr4RoiSicvgDfGqz-VSeY'
 )
-ADMIN_ID = '1014079912'  # Telegram ID куратора / адміна
+ADMIN_ID = 1014079912  # Ваш особистий Telegram ID
 
-# 📋 Список Telegram ID людей, які будуть отримувати тривожне повідомлення SOS
+# 📋 Список особистих Telegram ID людей, які будуть отримувати тривожні SOS в приватні повідомлення:
 SOS_RECIPIENTS = [
-    1014079912,  # Куратор
-    902469327,  # Отримує SOS та може надсилати
+    1014079912,  # Ваш ID
+    902469327,  # ID колеги
 ]
 
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
 
-# Мінімальний веб-сервер для утримання хостингу (Keep-Alive)
+# Веб-сервер для утримання бота в активному стані на хостингу (Keep-Alive)
 @app.route('/')
 def home():
-  return 'Bot is alive!'
+  return 'Бот працює!'
 
 
 def run_flask():
@@ -42,7 +42,7 @@ def get_main_menu():
   markup.add("🚸 ст. 184 Невиконання обов'язків", '🏫 ст. 173-4 Булінг')
   markup.add('🤪 ст. 173 Дрібне хуліганство', '🚬 ст. 175-1 Куріння')
   markup.add('📜 Постанови/Накази', '🧠 Алгоритми')
-  markup.add('📄 Рапорт', 'ℹ️ Про бота')
+  markup.add('ℹ️ Про бота')
   markup.add('🚨 SOS (ТРИВОГА)')  # Кнопка SOS
   return markup
 
@@ -104,7 +104,7 @@ def get_algorithms_menu():
   return markup
 
 
-# --- Обробники команд та меню ---
+# --- Основні обробники ---
 
 
 @bot.message_handler(commands=['start'])
@@ -127,7 +127,7 @@ def back_to_main_menu(message):
   )
 
 
-# --- РОЗДІЛ: SOS (СИГНАЛ ТРИВОГИ) ---
+# --- ОБРОБНИК SOS (НАДСИЛАННЯ В ОСОБИСТІ ПОВІДОМЛЕННЯ) ---
 
 
 @bot.message_handler(
@@ -135,8 +135,9 @@ def back_to_main_menu(message):
 )
 def handle_sos_alert(message):
   user = message.from_user
-  username_str = f'@{user.username}' if user.username else 'немає username'
+  username_str = f'@{user.username}' if user.username else 'не вказано'
 
+  # Текст повідомлення, яке прийде в особисті чати
   sos_text = (
       '🚨 **УВАГА! СИГНАЛ ТРИВОГИ (SOS)!** 🚨\n\n'
       f'👤 **Відправник:** {user.first_name} {user.last_name or ""}\n'
@@ -146,45 +147,27 @@ def handle_sos_alert(message):
   )
 
   successful_sends = 0
+
+  # Надсилаємо в особистий чат кожному із списку SOS_RECIPIENTS
   for recipient_id in SOS_RECIPIENTS:
     try:
       bot.send_message(recipient_id, sos_text, parse_mode='Markdown')
       successful_sends += 1
     except Exception as e:
-      print(f'Не вдалося надіслати SOS для {recipient_id}: {e}')
+      print(
+          f'Не вдалося надіслати SOS для ID {recipient_id} (можливо, бот ще не'
+          f' запущений у приватних повідомленнях): {e}'
+      )
 
   bot.reply_to(
       message,
-      f'🚨 **Сигнал SOS успішно передано!**\nСповіщено осіб: {successful_sends}.',
+      f'🚨 **Сигнал SOS успішно передано!**\nСповіщено в особисті чати осіб:'
+      f' {successful_sends}.',
       parse_mode='Markdown',
   )
 
 
-# --- РОЗДІЛ: РАПОРТ (ФОТО) ---
-
-
-@bot.message_handler(
-    func=lambda message: bool(message.text) and 'Рапорт' in message.text
-)
-def send_raport_photo(message):
-  photo_path = 'raport.jpg'  # Фото рапорту повинно лежати поруч із кодом
-  if os.path.exists(photo_path):
-    with open(photo_path, 'rb') as photo:
-      bot.send_photo(
-          chat_id=message.chat.id,
-          photo=photo,
-          caption='📄 **Зразок рапорту**\n\nОсь приклад правильного оформлення.',
-          parse_mode='Markdown',
-      )
-  else:
-    bot.send_message(
-        message.chat.id,
-        '⚠️ Файл зразка рапорту не знайдено. Перевірте наявність файлу'
-        " 'raport.jpg' на сервері.",
-    )
-
-
-# --- РОЗДІЛ: ст. 127 КУпАП ---
+# --- КУпАП: ст. 127 ---
 
 
 @bot.message_handler(
@@ -214,7 +197,7 @@ def art127_info(message):
   bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
 
-# --- РОЗДІЛ: ст. 122 КУпАП ---
+# --- КУпАП: ст. 122 ---
 
 
 @bot.message_handler(
@@ -339,7 +322,7 @@ def art122_disability_info(message):
   bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
 
-# --- РОЗДІЛ: ст. 178 КУпАП ---
+# --- КУпАП: ст. 178 ---
 
 
 @bot.message_handler(
@@ -450,7 +433,7 @@ def art178_part3_info(message):
   bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
 
-# --- РОЗДІЛ: ст. 175-1 КУпАП ---
+# --- КУпАП: ст. 175-1 ---
 
 
 @bot.message_handler(
@@ -533,7 +516,7 @@ def smoking_part2_info(message):
   bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
 
-# --- РОЗДІЛ: Алгоритми ---
+# --- Алгоритми ---
 
 
 @bot.message_handler(
@@ -732,7 +715,7 @@ def under14_algorithm_info(message):
   bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
 
-# --- РОЗДІЛ: Постанови, Накази, Кодекси ---
+# --- Нормативно-правова база ---
 
 
 @bot.message_handler(
@@ -1004,7 +987,7 @@ def doc_685_1013_info(message):
   )
 
 
-# --- РОЗДІЛ: ст. 173-2 КУпАП (Домашнє насильство) ---
+# --- КУпАП: ст. 173-2 (Домашнє насильство) ---
 
 
 @bot.message_handler(
@@ -1055,7 +1038,7 @@ def child_violence_info(message):
   bot.send_message(message.chat.id, fabula_text_2, parse_mode='Markdown')
 
 
-# --- РОЗДІЛИ: ст. 184, ст. 173-4, ст. 173 КУпАП ---
+# --- Інші статті ---
 
 
 @bot.message_handler(
@@ -1159,9 +1142,6 @@ def art_173_info(message):
   bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
 
-# --- РОЗДІЛ: Про бота ---
-
-
 @bot.message_handler(
     func=lambda message: bool(message.text) and 'Про бота' in message.text
 )
@@ -1175,15 +1155,15 @@ def about_bot_info(message):
   bot.send_message(message.chat.id, about_text, parse_mode='Markdown')
 
 
-# --- Запуск сервера та бота ---
+# --- Запуск ---
 
 if __name__ == '__main__':
   threading.Thread(target=run_flask, daemon=True).start()
-  print('Бот успішно запущений!')
+  print('Бот успішно запущений...')
 
   while True:
     try:
       bot.polling(none_stop=True, interval=0, timeout=20)
     except Exception as e:
-      print(f'Помилка в роботі бота: {e}')
+      print(f'Помилка під час виконання: {e}')
       time.sleep(5)
