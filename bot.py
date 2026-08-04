@@ -121,31 +121,42 @@ def get_algorithms_menu():
 
 
 def bullying_main_inline():
+    """Головне меню розділу Булінг (1 кнопка)"""
     markup = types.InlineKeyboardMarkup(row_width=1)
     btn_alg = types.InlineKeyboardButton("📌 Алгоритм реагування", callback_data="bull_alg")
-    btn_head = types.InlineKeyboardButton("🏛 Повідомлення керівника ЗЗСО", callback_data="bull_head")
-    btn_actions = types.InlineKeyboardButton("📝 Подальші дії після засідання комісії", callback_data="bull_actions")
-    markup.add(btn_alg, btn_head, btn_actions)
+    markup.add(btn_alg)
+    return markup
+
+
+def bullying_alg_inline():
+    """Кнопки після перегляду Алгоритму реагування"""
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    btn_head = types.InlineKeyboardButton("🏛 Алгоритм керівника ЗЗСО", callback_data="bull_head")
+    btn_actions = types.InlineKeyboardButton("📝 Подальші дії", callback_data="bull_actions")
+    markup.add(btn_head, btn_actions)
     return markup
 
 
 def bullying_actions_inline():
+    """Меню вибору віку для Подальших дій"""
     markup = types.InlineKeyboardMarkup(row_width=1)
     btn_under_16 = types.InlineKeyboardButton("👶 До 16 років", callback_data="bull_under_16")
     btn_16_18 = types.InlineKeyboardButton("🧑 16–18 років", callback_data="bull_16_18")
     btn_over_18 = types.InlineKeyboardButton("👨 Від 18 років", callback_data="bull_over_18")
-    btn_back = types.InlineKeyboardButton("⬅️ Назад до Булінгу", callback_data="bull_main")
+    btn_back = types.InlineKeyboardButton("⬅️ Назад до Алгоритму", callback_data="bull_alg")
     markup.add(btn_under_16, btn_16_18, btn_over_18, btn_back)
     return markup
 
 
-def back_to_bull_main_inline():
+def back_to_bull_alg_inline():
+    """Кнопка повернення до Алгоритму"""
     markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton("⬅️ Назад до Булінгу", callback_data="bull_main"))
+    markup.add(types.InlineKeyboardButton("⬅️ Назад до Алгоритму", callback_data="bull_alg"))
     return markup
 
 
 def back_to_bull_actions_inline():
+    """Кнопка повернення до категорій віку"""
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton("⬅️ Назад до категорій віку", callback_data="bull_actions"))
     return markup
@@ -238,6 +249,8 @@ def handle_bullying_section(message):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith("bull_"))
 def handle_bullying_callbacks(call):
+    bot.answer_callback_query(call.id)
+
     if call.data == "bull_main":
         bot.edit_message_text(
             chat_id=call.message.chat.id,
@@ -266,14 +279,15 @@ def handle_bullying_callbacks(call):
             "2. Наслідки\n"
             "3. Нерівність сил\n\n"
             "⚠️ <i>Якщо все вищеперераховане сходиться — далі працюємо за алгоритмом булінгу.\n"
-            "Якщо НІ — проводимо профілактичні бесіди, заняття та можливе складання протоколу за ст. 184 КУпАП.</i>"
+            "Якщо НІ — проводимо профілактичні бесіди, заняття та можливе складання протоколу за ст. 184 КУпАП.</i>\n\n"
+            "<b>📩 Повідомлення керівника ЗЗСО</b>"
         )
         bot.edit_message_text(
             chat_id=call.message.chat.id,
             message_id=call.message.message_id,
             text=text,
             parse_mode="HTML",
-            reply_markup=back_to_bull_main_inline()
+            reply_markup=bullying_alg_inline()
         )
 
     elif call.data == "bull_head":
@@ -297,7 +311,7 @@ def handle_bullying_callbacks(call):
             message_id=call.message.message_id,
             text=text,
             parse_mode="HTML",
-            reply_markup=back_to_bull_main_inline()
+            reply_markup=back_to_bull_alg_inline()
         )
 
     elif call.data == "bull_actions":
