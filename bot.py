@@ -19,7 +19,8 @@ SOS_RECIPIENTS = [
     818368898,   # Кутєпов Є.С.
     333265010,   # Пєтухов М.Г.
     317864289,   # Щербак В.Ю.
-    395300656    # Разіньков Р.О.
+    395300656,   # Разіньков Р.О.
+    169691119    # Ридванська Г.В.
 ]
 
 # 👤 Кастомні імена для конкретних ID при надсиланні SOS
@@ -29,7 +30,8 @@ CUSTOM_NAMES = {
     818368898: 'Кутєпов Є.С.',
     333265010: 'Пєтухов М.Г.',
     317864289: 'Щербак В.Ю.',
-    395300656: 'Разіньков Р.О.'
+    395300656: 'Разіньков Р.О.',
+    169691119: 'Ридванська Г.В.'
 }
 
 bot = telebot.TeleBot(TOKEN)
@@ -103,7 +105,9 @@ def get_docs_menu():
     markup.add('👶 ЗУ Про охорону дитинства', '🏛 Постанова № 684')
     markup.add('🏛 Постанова № 1245', '🏛 Постанова № 70')
     markup.add('📋 Наказ № 663', '📋 Наказ № 1646')
-    markup.add('📋 Наказ № 685/1013', '🔙 Головне меню')
+    markup.add('📋 Наказ № 685/1013', '📋 Наказ № 1395')
+    markup.add('📋 Наказ № 1376', '📋 Наказ № 70')
+    markup.add('🔙 Головне меню')
     return markup
 
 
@@ -1221,7 +1225,7 @@ def doc_1245_info(message):
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and '70' in message.text
+    func=lambda message: bool(message.text) and message.text == '🏛 Постанова № 70'
 )
 def doc_70_info(message):
     markup = types.InlineKeyboardMarkup()
@@ -1254,6 +1258,63 @@ def doc_685_1013_info(message):
     bot.send_message(
         message.chat.id,
         '📋 **Спільний наказ № 685/1013**',
+        parse_mode='Markdown',
+        reply_markup=markup,
+    )
+
+
+@bot.message_handler(
+    func=lambda message: bool(message.text) and '1395' in message.text
+)
+def doc_1395_info(message):
+    markup = types.InlineKeyboardMarkup()
+    markup.add(
+        types.InlineKeyboardButton(
+            '🔗 Відкрити Наказ № 1395',
+            url='https://zakon.rada.gov.ua/laws/show/z1408-15#Text',
+        )
+    )
+    bot.send_message(
+        message.chat.id,
+        '📋 **Наказ МВС України № 1395**',
+        parse_mode='Markdown',
+        reply_markup=markup,
+    )
+
+
+@bot.message_handler(
+    func=lambda message: bool(message.text) and '1376' in message.text
+)
+def doc_1376_info(message):
+    markup = types.InlineKeyboardMarkup()
+    markup.add(
+        types.InlineKeyboardButton(
+            '🔗 Відкрити Наказ № 1376',
+            url='https://zakon.rada.gov.ua/laws/show/z1496-15#Text',
+        )
+    )
+    bot.send_message(
+        message.chat.id,
+        '📋 **Наказ МВС України № 1376**',
+        parse_mode='Markdown',
+        reply_markup=markup,
+    )
+
+
+@bot.message_handler(
+    func=lambda message: bool(message.text) and message.text == '📋 Наказ № 70'
+)
+def doc_70_order_info(message):
+    markup = types.InlineKeyboardMarkup()
+    markup.add(
+        types.InlineKeyboardButton(
+            '🔗 Відкрити Наказ № 70',
+            url='https://zakon.rada.gov.ua/laws/show/z0250-16#Text',
+        )
+    )
+    bot.send_message(
+        message.chat.id,
+        '📋 **Наказ МВС України № 70**',
         parse_mode='Markdown',
         reply_markup=markup,
     )
