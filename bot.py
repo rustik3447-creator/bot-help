@@ -4,12 +4,38 @@ import time
 from flask import Flask
 import telebot
 from telebot import types
+from google import genai
+from google.genai import types as genai_types
 
 # --- Налаштування ---
 TOKEN = os.environ.get(
     'BOT_TOKEN', '8785665273:AAFikmkrKRnR9rYr4RoiSicvgDfGqz-VSeY'
 )
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', 'YOUR_GEMINI_API_KEY_HERE')
 ADMIN_ID = 1014079912  # Ваш особистий Telegram ID
+
+# Ініціалізація Gemini API
+ai_client = genai.Client(api_key=GEMINI_API_KEY)
+
+# Промпт для AI-консультанта
+AI_SYSTEM_INSTRUCTION = """
+Ти — професійний юридичний консультант для працівників Служби освітньої безпеки поліції України.
+
+Твоє завдання:
+1. Аналізувати ситуації чи запитання користувача щодо законодавства України (ККУ, КУпАП, Закони "Про освіту", "Про поліцію", накази МОН/МВС).
+2. Використовувати вбудований пошук Google для перевірки АКТУАЛЬНОЇ редакції законів (пріоритет сайт zakon.rada.gov.ua).
+3. Форматувати відповідь чітко та структуровано:
+   - ⚖️ **Кваліфікація / Норма права:** (Стаття, частина, суб'єкт правопорушення).
+   - 📋 **Алгоритм дій інспектора:** (Покроковий чек-лист).
+   - ⚠️ **Важливі нюанси:** (Вік відповідальності, строки, необхідні докази).
+   - 🔗 **Джерела:** (Обов'язково додавай посилання на нормативні акти, знайдені в мережі).
+
+Якщо інформації недостатньо для точної кваліфікації, вкажи можливі варіанти або постав 1-2 уточнюючих запитання.
+Не вигадуй статті, спирайся тільки на чинне законодавство України.
+"""
+
+# Збереження стану користувачів, які перебувають у режимі AI-консультацій
+user_ai_mode = {}
 
 # 📋 Список особистих Telegram ID людей, які отримують тривожні SOS в приватні повідомлення:
 SOS_RECIPIENTS = [
@@ -56,6 +82,7 @@ def run_flask():
 
 def get_main_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+    markup.add('🤖 AI-Помічник (Шукає в мережі)')
     markup.add('🚗 ст. 122 ПДР', '🚶 ст. 127 Порушення ПДР пішоходами')
     markup.add('🍻 ст. 178 Алкоголь/П’яний вигляд', '⚖️ ст. 173-2 Домашнє насильство')
     markup.add("🚸 ст. 184 Невиконання обов'язків", '🚷 Булінг')
@@ -174,6 +201,7 @@ def back_to_bull_actions_inline():
 
 @bot.message_handler(commands=['start'])
 def start(message):
+    user_ai_mode[message.chat.id] = False
     bot.send_message(
         message.chat.id,
         f'Вітаю, {message.from_user.first_name}!\n'
@@ -187,8 +215,32 @@ def start(message):
     and ('Головне меню' in message.text or message.text == '/menu')
 )
 def back_to_main_menu(message):
+    user_ai_mode[message.chat.id] = False
     bot.send_message(
         message.chat.id, 'Повертаємось до головного меню:', reply_markup=get_main_menu()
+    )
+
+
+# --- РОЗДІЛ: AI-ПОМІЧНИК (З ПОШУКОМ В ІНТЕРНЕТІ) ---
+
+
+@bot.message_handler(
+    func=lambda message: bool(message.text) and 'AI-Помічник' in message.text
+)
+def enable_ai_mode(message):
+    user_ai_mode[message.chat.id] = True
+    
+    cancel_markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    cancel_markup.add('🔙 Головне меню')
+    
+    bot.send_message(
+        message.chat.id,
+        "🤖 **Режим AI-Помічника підключено!**\n\n"
+        "Опишіть будь-яку ситуацію, поставте запитання щодо КУпАП/ККУ чи діючого законодавства. "
+        "Я виконаю пошук в інтернеті та надам актуальну кваліфікацію разом із джерелами.\n\n"
+        "*(Наприклад: «Учень 8 класу приніс ніж до школи та погрожував однокласникам, що робити?»)*",
+        parse_mode='Markdown',
+        reply_markup=cancel_markup
     )
 
 
@@ -199,6 +251,7 @@ def back_to_main_menu(message):
     func=lambda message: bool(message.text) and 'SOS' in message.text
 )
 def handle_sos_alert(message):
+    user_ai_mode[message.chat.id] = False
     user = message.from_user
 
     if user.id in CUSTOM_NAMES:
@@ -246,6 +299,7 @@ def handle_sos_alert(message):
 
 @bot.message_handler(func=lambda message: bool(message.text) and 'Булінг' in message.text)
 def handle_bullying_section(message):
+    user_ai_mode[message.chat.id] = False
     bot.send_message(
         message.chat.id,
         "<b>Розділ: Реагування на випадки булінгу</b>\n\nОберіть потрібний підрозділ:",
@@ -412,6 +466,7 @@ def handle_bullying_callbacks(call):
     and ('127' in message.text or 'пішоходами' in message.text.lower())
 )
 def art127_info(message):
+    user_ai_mode[message.chat.id] = False
     text = (
         '🚶 **ПРИКЛАД ФАБУЛИ ЗА ч.1 ст. 127 КУпАП (Пішохід)**\n\n'
         '• 11.04.2023р. о 12 год. 00 хв. в м. Рівне по вул. Соборна 10 пішохід'
@@ -451,6 +506,7 @@ def art127_info(message):
     )
 )
 def art122_category_select(message):
+    user_ai_mode[message.chat.id] = False
     bot.send_message(
         message.chat.id,
         '🚘 **ст. 122 КУпАП — Порушення ПДР**\nОберіть категорію правопорушення:',
@@ -464,6 +520,7 @@ def art122_category_select(message):
     and 'Порушення вимог дорожніх знаків' in message.text
 )
 def art122_signs_info(message):
+    user_ai_mode[message.chat.id] = False
     text = (
         '🛑 **Порушення вимог дорожніх знаків (ст. 122 КУпАП)**\n\n'
         '11.04.2023р. о 12 год. 00 хв. в м. Рівне по вул. Соборна 10 водій керуючи'
@@ -490,6 +547,7 @@ def art122_signs_info(message):
     and 'Порушення правил зупинки' in message.text
 )
 def art122_stopping_info(message):
+    user_ai_mode[message.chat.id] = False
     text = (
         '🅿️ **Порушення правил зупинки (ст. 122 КУпАП)**\n\n'
         '11.04.2023р. о 12 год. 00 хв. в м. Рівне по вул. Соборна 10 водій керуючи'
@@ -514,6 +572,7 @@ def art122_stopping_info(message):
     and 'Порушення правил стоянки' in message.text
 )
 def art122_parking_info(message):
+    user_ai_mode[message.chat.id] = False
     text = (
         '🚘 **ПРИКЛАД ФАБУЛИ ЗА ч. 1 ст. 122 КУпАП (Порушення правил'
         ' стоянки)**\n\n'
@@ -539,6 +598,7 @@ def art122_parking_info(message):
     and 'Зупинка/стоянка для осіб з інвалідністю' in message.text
 )
 def art122_disability_info(message):
+    user_ai_mode[message.chat.id] = False
     text = (
         '♿️ **Зупинка/стоянка на місцях для осіб з інвалідністю (ст. 122'
         ' КУпАП)**\n\n'
@@ -568,6 +628,7 @@ def art122_disability_info(message):
     and not any(x in message.text for x in ['ч. 1', 'ч. 2', 'ч. 3'])
 )
 def art178_category_select(message):
+    user_ai_mode[message.chat.id] = False
     bot.send_message(
         message.chat.id,
         '🍻 **ст. 178 КУпАП — Розпивання алкоголю / Поява у п’яному вигляді**\n\n'
@@ -583,6 +644,7 @@ def art178_category_select(message):
     and '178' in message.text
 )
 def art178_part1_info(message):
+    user_ai_mode[message.chat.id] = False
     text = (
         '🍺 **ПРИКЛАДИ ФАБУЛ ЗА Ч. 1 ст. 178 КУпАП**\n\n'
         '📌 **1. Поява у п’яному вигляді:**\n'
@@ -612,6 +674,7 @@ def art178_part1_info(message):
     and '178' in message.text
 )
 def art178_part2_info(message):
+    user_ai_mode[message.chat.id] = False
     text = (
         '🍻 **ПРИКЛАДИ ФАБУЛ ЗА Ч. 2 ст. 178 КУпАП (Повторно протягом'
         ' року)**\n\n'
@@ -644,6 +707,7 @@ def art178_part2_info(message):
     and '178' in message.text
 )
 def art178_part3_info(message):
+    user_ai_mode[message.chat.id] = False
     text = (
         '🍷 **ПРИКЛАДИ ФАБУЛ ЗА Ч. 3 ст. 178 КУпАП (Двічі піддавався стягненню'
         ' протягом року)**\n\n'
@@ -680,6 +744,7 @@ def art178_part3_info(message):
     and 'ч. 2' not in message.text
 )
 def smoking_category_select(message):
+    user_ai_mode[message.chat.id] = False
     bot.send_message(
         message.chat.id,
         'Оберіть частину ст. 175-1 КУпАП для перегляду фабули та нормативної'
@@ -694,6 +759,7 @@ def smoking_category_select(message):
     and '175-1' in message.text
 )
 def smoking_part1_info(message):
+    user_ai_mode[message.chat.id] = False
     text = (
         '🚬 **ч. 1 ст. 175-1 КУпАП — Куріння тютюнових виробів у заборонених'
         ' місцях**\n\n'
@@ -739,6 +805,7 @@ def smoking_part1_info(message):
     and '175-1' in message.text
 )
 def smoking_part2_info(message):
+    user_ai_mode[message.chat.id] = False
     text = (
         '🚭 **ч. 2 ст. 175-1 КУпАП — Повторне протягом року вчинення'
         ' правопорушення**\n\n'
@@ -760,6 +827,7 @@ def smoking_part2_info(message):
     func=lambda message: bool(message.text) and 'Алгоритми' in message.text
 )
 def algorithms_category_select(message):
+    user_ai_mode[message.chat.id] = False
     bot.send_message(
         message.chat.id,
         'Оберіть потрібний алгоритм дій:',
@@ -771,6 +839,7 @@ def algorithms_category_select(message):
     func=lambda message: bool(message.text) and 'виявленні ВНП' in message.text
 )
 def explosives_algorithm_info(message):
+    user_ai_mode[message.chat.id] = False
     text = (
         "💣 <b>При виявленні ВНП потрібно діяти за наступним алгоритмом:</b>\n\n"
         "1. <b>Власна безпека:</b>\n"
@@ -838,6 +907,7 @@ def handle_vnp_report_example(call):
     func=lambda message: bool(message.text) and 'наркотичних речовин' in message.text.lower()
 )
 def drugs_algorithm_info(message):
+    user_ai_mode[message.chat.id] = False
     text = (
         "🚨 <b>УВАГА! ПОВЕРХНЕВА ПЕРЕВІРКА ОСІБ, ЯКІ НЕ ДОСЯГЛИ 18 РОКІВ, ЗАБОРОНЕНА!</b>\n\n"
         "1. Увімкнути бодікамеру у разі надходження інформації про наявність заборонених речовин у учнів ЗЗСО.\n"
@@ -876,7 +946,7 @@ def handle_drugs_callbacks(call):
             "<b>Дії при відмові дитини від добровільної видачі заборонених речовин:</b>\n"
             "• Очікувати прибуття батьків на місце події, при прибутті батьків наполягати на тому, щоб вони перевірили речі дитини на наявність заборонених речовин.\n"
             "• У разі наявності такої речовини повідомити безпосереднього керівника або старшого з ОД.\n"
-            "• Зробити реєстрацію на 102 та очікувати прибуття СОГ.\n\n"
+            "• Зробить реєстрацію на 102 та очікувати прибуття СОГ.\n\n"
             "<b>Документування:</b>\n"
             "• Внести всі відомості до ІПНП (електронний рапорт, додати річ, особа, дія, фото).\n"
             "• Написати письмовий рапорт. У рапорті з дитиною прописуємо Прізвище, ім'я, по батькові, "
@@ -891,6 +961,7 @@ def handle_drugs_callbacks(call):
     and 'від 16 до 18 років' in message.text
 )
 def over16_algorithm_info(message):
+    user_ai_mode[message.chat.id] = False
     text = (
         '🧑‍🎓 **Фіксування адміністративного правопорушення, вчиненого'
         ' неповнолітнім, віком від 16 до 18 років**\n\n'
@@ -925,6 +996,7 @@ def over16_algorithm_info(message):
     and 'від 14 до 16 років' in message.text
 )
 def over14_algorithm_info(message):
+    user_ai_mode[message.chat.id] = False
     text = (
         '🎒 **Фіксування адміністративного правопорушення, вчиненого'
         ' неповнолітнім, віком від 14 до 16 років**\n\n'
@@ -958,6 +1030,7 @@ def over14_algorithm_info(message):
     func=lambda message: bool(message.text) and 'до 14 років' in message.text
 )
 def under14_algorithm_info(message):
+    user_ai_mode[message.chat.id] = False
     text = (
         '👶 **Фіксування адміністративного правопорушення, вчиненого малолітніми,'
         ' віком до 14 років, або ухилення батьків чи осіб, які їх замінюють, від'
@@ -1005,6 +1078,7 @@ def under14_algorithm_info(message):
     )
 )
 def docs_category_select(message):
+    user_ai_mode[message.chat.id] = False
     bot.send_message(
         message.chat.id,
         'Оберіть потрібну постанову, наказ, закон або кодекс:',
@@ -1016,6 +1090,7 @@ def docs_category_select(message):
     func=lambda message: bool(message.text) and 'купап' in message.text.lower()
 )
 def doc_kupap_info(message):
+    user_ai_mode[message.chat.id] = False
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1036,6 +1111,7 @@ def doc_kupap_info(message):
     and 'кримінальний кодекс' in message.text.lower()
 )
 def doc_kk_info(message):
+    user_ai_mode[message.chat.id] = False
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1056,6 +1132,7 @@ def doc_kk_info(message):
     and 'сімейний кодекс' in message.text.lower()
 )
 def doc_family_code_info(message):
+    user_ai_mode[message.chat.id] = False
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1076,6 +1153,7 @@ def doc_family_code_info(message):
     and 'національну поліцію' in message.text.lower()
 )
 def doc_police_law_info(message):
+    user_ai_mode[message.chat.id] = False
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1095,6 +1173,7 @@ def doc_police_law_info(message):
     func=lambda message: bool(message.text) and message.text == '🎓 ЗУ Про освіту'
 )
 def doc_education_law_info(message):
+    user_ai_mode[message.chat.id] = False
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1115,6 +1194,7 @@ def doc_education_law_info(message):
     and 'середню освіту' in message.text.lower()
 )
 def doc_sec_education_law_info(message):
+    user_ai_mode[message.chat.id] = False
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1135,6 +1215,7 @@ def doc_sec_education_law_info(message):
     and 'охорону дитинства' in message.text.lower()
 )
 def doc_child_protection_info(message):
+    user_ai_mode[message.chat.id] = False
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1154,6 +1235,7 @@ def doc_child_protection_info(message):
     func=lambda message: bool(message.text) and '684' in message.text
 )
 def doc_684_info(message):
+    user_ai_mode[message.chat.id] = False
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1173,6 +1255,7 @@ def doc_684_info(message):
     func=lambda message: bool(message.text) and '663' in message.text
 )
 def doc_663_info(message):
+    user_ai_mode[message.chat.id] = False
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1192,6 +1275,7 @@ def doc_663_info(message):
     func=lambda message: bool(message.text) and '1646' in message.text
 )
 def doc_1646_info(message):
+    user_ai_mode[message.chat.id] = False
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1211,6 +1295,7 @@ def doc_1646_info(message):
     func=lambda message: bool(message.text) and '1245' in message.text
 )
 def doc_1245_info(message):
+    user_ai_mode[message.chat.id] = False
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1230,6 +1315,7 @@ def doc_1245_info(message):
     func=lambda message: bool(message.text) and message.text == '🏛 Постанова № 70'
 )
 def doc_70_info(message):
+    user_ai_mode[message.chat.id] = False
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1250,6 +1336,7 @@ def doc_70_info(message):
     and ('685' in message.text or '1013' in message.text)
 )
 def doc_685_1013_info(message):
+    user_ai_mode[message.chat.id] = False
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1269,6 +1356,7 @@ def doc_685_1013_info(message):
     func=lambda message: bool(message.text) and '1395' in message.text
 )
 def doc_1395_info(message):
+    user_ai_mode[message.chat.id] = False
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1288,6 +1376,7 @@ def doc_1395_info(message):
     func=lambda message: bool(message.text) and '1376' in message.text
 )
 def doc_1376_info(message):
+    user_ai_mode[message.chat.id] = False
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1307,6 +1396,7 @@ def doc_1376_info(message):
     func=lambda message: bool(message.text) and message.text == '📋 Наказ № 70'
 )
 def doc_70_order_info(message):
+    user_ai_mode[message.chat.id] = False
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1330,6 +1420,7 @@ def doc_70_order_info(message):
     and ('173-2' in message.text or 'Домашнє насильство' in message.text)
 )
 def violence_category_select(message):
+    user_ai_mode[message.chat.id] = False
     bot.send_message(
         message.chat.id,
         'Оберіть потрібний розділ:',
@@ -1343,6 +1434,7 @@ def violence_category_select(message):
     and '122' not in message.text
 )
 def child_violence_info(message):
+    user_ai_mode[message.chat.id] = False
     fabula_text_1 = (
         '⚖️ **ПРИКЛАД ФАБУЛЫ ЗА Ч. 2 СТ. 173-2 КУпАП**\n'
         '*(постраждала особа — присутня дитина)*\n\n'
@@ -1380,6 +1472,7 @@ def child_violence_info(message):
     func=lambda message: bool(message.text) and '184' in message.text
 )
 def art_184_info(message):
+    user_ai_mode[message.chat.id] = False
     text = (
         '🚸 **ст. 184 КУпАП — Невиконання батьками або особами, що їх замінюють,'
         " обов'язків щодо виховання дітей**\n\n📌 **Ч. 1:** Ухилення батьків або"
@@ -1414,6 +1507,7 @@ def art_184_info(message):
     and '178' not in message.text
 )
 def art_173_info(message):
+    user_ai_mode[message.chat.id] = False
     text = (
         '🤪 **ст. 173 КУпАП — Дрібне хуліганство**\n\nДрібне хуліганство, тобто'
         ' нецензурна лайка в громадських місцях, образливе чіпляння до громадян та'
@@ -1436,6 +1530,7 @@ def art_173_info(message):
     func=lambda message: bool(message.text) and 'Про бота' in message.text
 )
 def about_bot_info(message):
+    user_ai_mode[message.chat.id] = False
     about_text = (
         'ℹ️ **Про робочий помічник СОБ**\n\nЦей бот розроблений для швидкого'
         ' доступу до необхідної нормативно-правової бази, фабул адміністративних'
@@ -1443,6 +1538,59 @@ def about_bot_info(message):
         ' Безпеки.\n\n👨‍💻 **З питань роботи бота звертайтеся до куратора.**'
     )
     bot.send_message(message.chat.id, about_text, parse_mode='Markdown')
+
+
+# --- ЗАГАЛЬНИЙ ОБРОБНИК ТЕКСТУ (ДЛЯ AI ПРИ УВІМКНЕНОМУ РЕЖИМІ) ---
+
+
+@bot.message_handler(func=lambda message: bool(message.text))
+def handle_all_messages(message):
+    chat_id = message.chat.id
+
+    # Перевірка, чи ввімкнув користувач режим AI
+    if user_ai_mode.get(chat_id, False):
+        status_msg = bot.send_message(
+            chat_id,
+            "🔍 *Аналізую ситуацію та шукаю актуальну нормативну базу в мережі...*",
+            parse_mode="Markdown"
+        )
+        
+        try:
+            # Виклик Gemini 2.5 з пошуком Google
+            response = ai_client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=message.text,
+                config=genai_types.GenerateContentConfig(
+                    system_instruction=AI_SYSTEM_INSTRUCTION,
+                    temperature=0.2,
+                    tools=[genai_types.Tool(google_search=genai_types.GoogleSearch())]
+                )
+            )
+            
+            bot.delete_message(chat_id, status_msg.message_id)
+            answer_text = response.text
+            
+            # Обхід ліміту довжини повідомлень у Telegram (4096 символів)
+            if len(answer_text) > 4000:
+                for x in range(0, len(answer_text), 4000):
+                    bot.send_message(chat_id, answer_text[x:x+4000], parse_mode="Markdown")
+            else:
+                bot.send_message(chat_id, answer_text, parse_mode="Markdown")
+
+        except Exception as e:
+            print(f"Помилка при запиті до Gemini API: {e}")
+            bot.edit_message_text(
+                chat_id=chat_id,
+                message_id=status_msg.message_id,
+                text="❌ Виникла помилка під час обробки запиту. Спробуйте сформулювати запитання інакше."
+            )
+    else:
+        bot.send_message(
+            chat_id,
+            "Оберіть пункт з меню нижче або натисніть **🤖 AI-Помічник**, щоб поставити довільне запитання:",
+            reply_markup=get_main_menu(),
+            parse_mode="Markdown"
+        )
 
 
 # --- Запуск ---
