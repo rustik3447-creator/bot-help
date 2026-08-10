@@ -915,7 +915,7 @@ def over16_algorithm_info(message):
         '3. ПОЯСНЕННЯ УЧАСНИКІВ ПОДІЇ\n'
         '4. ВІДЕО З Б/К\n'
         '5. КОПІЯ ПАСПОРТА (ПРАВОПОРУШНИКА)\n'
-        '7. Інші фактичні дані, які могут свідчити про вчинення правопорушення (відео, фото, інше...)'
+        '7. Інші фактичні дані, які можуть свідчити про вчинення правопорушення (відео, фото, інше...)'
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
@@ -949,7 +949,7 @@ def over14_algorithm_info(message):
         '3. ПОЯСНЕННЯ УЧАСНИКІВ ПОДІЇ\n'
         '4. ВІДЕО З Б/К\n'
         '5. КОПІЯ ПАСПОРТА (ПРАВОПОРУШНИКА)\n'
-        '7. Інші фактичні дані, які можуть свідчити про вчинення правопорушення (відео, фото, інше...)'
+        '7. Інші фактичні дані, які могут свідчити про вчинення правопорушення (відео, фото, інше...)'
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
@@ -1451,17 +1451,9 @@ if __name__ == '__main__':
     threading.Thread(target=run_flask, daemon=True).start()
     print('Бот успішно запущений...')
 
-    # Очищуємо накопичені старі оновлення/запити та скидаємо offset
-    try:
-        bot.remove_webhook(drop_pending_updates=True)
-        time.sleep(1)
-    except Exception as e:
-        print(f'Не вдалося скинути оновлення: {e}')
-
     while True:
         try:
-            # skip_pending_updates=True гарантує пропуск старих подій під час polling
-            bot.polling(none_stop=True, interval=0, timeout=20, skip_pending_updates=True)
+            bot.polling(none_stop=True, interval=0, timeout=20)
         except Exception as e:
-            print(f'Помилка під час виконання polling: {e}')
+            print(f'Помилка під час виконання: {e}')
             time.sleep(5)
