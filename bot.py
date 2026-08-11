@@ -29,6 +29,7 @@ SOS_RECIPIENTS = [
 
 # 👤 Кастомні імена для конкретних ID при надсиланні SOS
 CUSTOM_NAMES = {
+    1014079912: 'Руслан (Адміністратор)',
     902469327: 'Могилка В.О. (старший з ОД)',
     178637753: 'Кравченко О.Ю.',
     818368898: 'Кутєпов Є.С.',
@@ -205,7 +206,7 @@ def start(message):
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and ('Головне меню' in message.text or message.text == '/menu')
 )
 def back_to_main_menu(message):
@@ -218,7 +219,7 @@ def back_to_main_menu(message):
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and 'SOS' in message.text
+    func=lambda message: message.text is not None and 'SOS' in message.text
 )
 def handle_sos_alert(message):
     user = message.from_user
@@ -266,7 +267,7 @@ def handle_sos_alert(message):
 # --- РОЗДІЛ: БУЛІНГ ---
 
 
-@bot.message_handler(func=lambda message: bool(message.text) and 'Булінг' in message.text)
+@bot.message_handler(func=lambda message: message.text is not None and 'Булінг' in message.text)
 def handle_bullying_section(message):
     bot.send_message(
         message.chat.id,
@@ -429,7 +430,7 @@ def handle_bullying_callbacks(call):
 # --- РОЗДІЛ: СЕКСУАЛЬНЕ ДОМАГАННЯ ---
 
 
-@bot.message_handler(func=lambda message: bool(message.text) and 'Сексуальне домагання' in message.text)
+@bot.message_handler(func=lambda message: message.text is not None and 'Сексуальне домагання' in message.text)
 def handle_sex_harassment_section(message):
     text = (
         "<b>🚨 СЕКСУАЛЬНЕ ДОМАГАННЯ — АЛГОРИТМ ДІЙ</b>\n\n"
@@ -515,12 +516,12 @@ def handle_sex_harassment_callbacks(call):
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and ('127' in message.text or 'пішоходами' in message.text.lower())
 )
 def art127_info(message):
     text = (
-        '🚶 **ПРИКЛАД ФАБУЛИ ЗА ч.1 ст. 127 КУпАП (Пішохід)**\n\n'
+        '🚶 <b>ПРИКЛАД ФАБУЛИ ЗА ч.1 ст. 127 КУпАП (Пішохід)</b>\n\n'
         '• 11.04.2023р. о 12 год. 00 хв. в м. Рівне по вул. Соборна 10 пішохід'
         ' рухався по проїзній частині (велосипедній доріжці), коли поруч знаходився'
         ' тротуар (пішохідна доріжка), чим порушив п.4.1 ПДР.\n\n'
@@ -538,14 +539,14 @@ def art127_info(message):
         ' безпосередньо перед транспортним засобом, чим порушив п.4.10 та п.4.14а'
         ' ПДР.'
     )
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    bot.send_message(message.chat.id, text, parse_mode='HTML')
 
 
 # --- КУпАП: ст. 122 ---
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and ('122' in message.text or 'ст. 122 ПДР' in message.text)
     and not any(
         x in message.text
@@ -560,70 +561,70 @@ def art127_info(message):
 def art122_category_select(message):
     bot.send_message(
         message.chat.id,
-        '🚘 **ст. 122 КУпАП — Порушення ПДР**\nОберіть категорію правопорушення:',
+        '🚘 <b>ст. 122 КУпАП — Порушення ПДР</b>\nОберіть категорію правопорушення:',
         reply_markup=get_art122_menu(),
-        parse_mode='Markdown',
+        parse_mode='HTML',
     )
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and 'Порушення вимог дорожніх знаків' in message.text
 )
 def art122_signs_info(message):
     text = (
-        '🛑 **Порушення вимог дорожніх знаків (ст. 122 КУпАП)**\n\n'
+        '🛑 <b>Порушення вимог дорожніх знаків (ст. 122 КУпАП)</b>\n\n'
         '11.04.2023р. о 12 год. 00 хв. в м. Рівне по вул. Соборна 10 водій керуючи'
         ' транспортним засобом ЗАЗ 969, НЗ АА0101АА, порушив вимогу дорожнього'
         ' знака:\n\n'
-        '• **3.1 «Рух заборонено»**, а саме здійснив рух в зону дії знака, чим'
+        '• <b>3.1 «Рух заборонено»</b>, а саме здійснив рух в зону дії знака, чим'
         ' порушив п.3.1, додатку 1, розділу 34 ПДР.\n'
         '• керуючи механічним транспортним засобом ЗАЗ 969, НЗ АА0101АА, порушив'
-        ' вимогу дорожнього знаку **3.2 «Рух механічних транспортних засобів'
-        ' заборонено»**, а саме здійснив рух в зону дії знака, чим порушив'
+        ' вимогу дорожнього знаку <b>3.2 «Рух механічних транспортних засобів'
+        ' заборонено»</b>, а саме здійснив рух в зону дії знака, чим порушив'
         ' п.3.2, додатку 1, розділу 34 ПДР.\n'
-        '• **3.21 «В’їзд заборонено»**, а саме здійснив в’їзд в зону дії знака,'
+        '• <b>3.21 «В’їзд заборонено»</b>, а саме здійснив в’їзд в зону дії знака,'
         ' чим порушив п.3.21, додатку 1, розділу 34 ПДР.\n'
-        '• **3.34 «Зупинку заборонено»**, а саме здійснив зупинку в зоні дії'
+        '• <b>3.34 «Зупинку заборонено»</b>, а саме здійснив зупинку в зоні дії'
         ' знака, чим порушив п.3.34, додатку 1, розділу 34 ПДР.\n'
-        '• **3.35 «Стоянку заборонено»**, а саме здійснив стоянку в зоні дії'
+        '• <b>3.35 «Стоянку заборонено»</b>, а саме здійснив стоянку в зоні дії'
         ' знака, чим порушив п.3.35, додатку 1, розділу 34 ПДР.'
     )
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    bot.send_message(message.chat.id, text, parse_mode='HTML')
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and 'Порушення правил зупинки' in message.text
 )
 def art122_stopping_info(message):
     text = (
-        '🅿️ **Порушення правил зупинки (ст. 122 КУпАП)**\n\n'
+        '🅿️ <b>Порушення правил зупинки (ст. 122 КУпАП)</b>\n\n'
         '11.04.2023р. о 12 год. 00 хв. в м. Рівне по вул. Соборна 10 водій керуючи'
         ' транспортним засобом ЗАЗ 969, НЗ АА0101АА, порушив правила зупинки, а'
         ' саме здійснив зупинку:\n\n'
-        '• **на пішохідному переході** (на відстані 8м. від пішохідного переходу),'
+        '• <b>на пішохідному переході</b> (на відстані 8м. від пішохідного переходу),'
         ' чим порушив п.15.9г ПДР.\n'
-        '• **на перехресті** (на відстані 8м. від края перехрещуваної проїзної'
+        '• <b>на перехресті</b> (на відстані 8м. від края перехрещуваної проїзної'
         ' частини), чим порушив п.15.9ґ ПДР.\n'
-        '• **на відстані 25м., від посадкового майданчику** для зупинки'
+        '• <b>на відстані 25м., від посадкового майданчику</b> для зупинки'
         ' маршрутних транспортних засобів, чим порушив п.15.9е ПДР.\n'
-        '• **безпосередньо в місці** (на відстані 8м. від) виїзду з прилеглої'
+        '• <b>безпосередньо в місці</b> (на відстані 8м. від) виїзду з прилеглої'
         ' території, чим порушив п.15.9и ПДР.\n'
-        '• **у другому ряді** (поруч з іншим транспортним засобом, який стоїть'
+        '• <b>у другому ряді</b> (поруч з іншим транспортним засобом, який стоїть'
         ' біля краю проїзною частини (на узбіччі)), чим порушив п.15.4 ПДР.'
     )
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    bot.send_message(message.chat.id, text, parse_mode='HTML')
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and 'Порушення правил стоянки' in message.text
 )
 def art122_parking_info(message):
     text = (
-        '🚘 **ПРИКЛАД ФАБУЛИ ЗА ч. 1 ст. 122 КУпАП (Порушення правил'
-        ' стоянки)**\n\n'
+        '🚘 <b>ПРИКЛАД ФАБУЛИ ЗА ч. 1 ст. 122 КУпАП (Порушення правил'
+        ' стоянки)</b>\n\n'
         '11.04.2023р. о 12 год. 00 хв. в м. Рівне по вул. Соборна 10 водій керуючи'
         ' транспортним засобом ЗАЗ 969, НЗ АА0101АА, порушив правила стоянки, а'
         ' саме здійснив стоянку:\n'
@@ -638,61 +639,61 @@ def art122_parking_info(message):
         ' стоянки, а саме здійснив стоянку на тротуарі, чим порушив п.15.10б'
         ' ПДР.'
     )
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    bot.send_message(message.chat.id, text, parse_mode='HTML')
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and 'Зупинка/стоянка для осіб з інвалідністю' in message.text
 )
 def art122_disability_info(message):
     text = (
-        '♿️ **Зупинка/стоянка на місцях для осіб з інвалідністю (ст. 122'
-        ' КУпАП)**\n\n'
+        '♿️ <b>Зупинка/стоянка на місцях для осіб з інвалідністю (ст. 122'
+        ' КУпАП)</b>\n\n'
         '11.04.2023р. о 12 год. 00 хв. в м. Рівне по вул. Соборна 10 водій керуючи'
         ' транспортним засобом ЗАЗ 969, НЗ АА0101АА:\n\n'
-        '• здійснив зупинку (стоянку) у місці, що позначено **дорожнім знаком'
+        '• здійснив зупинку (стоянку) у місці, що позначено <b>дорожнім знаком'
         ' 5.42.1 (5.42.2) «Місце для стоянки» (5.43 «Зона стоянки») з табличкою'
-        ' 7.17 «Особи з інвалідністю»**, не будучи при цьому особою, визначеною'
+        ' 7.17 «Особи з інвалідністю»</b>, не будучи при цьому особою, визначеною'
         ' ЗУ «Про основи соціальної захищеності інвалідів в Україні», а також не'
         ' перевозивши таких осіб, чим порушив п.15.1 та п.5.42.1 додатку 1,'
         ' р.33 ПДР.\n\n'
-        '• здійснив зупинку (стоянку) у місці, що позначено **дорожньою розміткою'
-        ' 1.35**, яка позначає місця для паркування транспорту осіб з'
+        '• здійснив зупинку (стоянку) у місці, що позначено <b>дорожньою розміткою'
+        ' 1.35</b>, яка позначає місця для паркування транспорту осіб з'
         ' інвалідністю, не будучи при цьому особою, визначеною ЗУ «Про основи'
         ' соціальної захищеності інвалідів в Україні», а також не перевозивши'
         ' таких осіб, чим порушив п.15.1 та п.1.35 додатку 2, розділу 34 ПДР.'
     )
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    bot.send_message(message.chat.id, text, parse_mode='HTML')
 
 
 # --- КУпАП: ст. 178 ---
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and ('178' in message.text or 'Алкоголь' in message.text)
     and not any(x in message.text for x in ['ч. 1', 'ч. 2', 'ч. 3'])
 )
 def art178_category_select(message):
     bot.send_message(
         message.chat.id,
-        '🍻 **ст. 178 КУпАП — Розпивання алкоголю / Поява у п’яному вигляді**\n\n'
+        '🍻 <b>ст. 178 КУпАП — Розпивання алкоголю / Поява у п’яному вигляді</b>\n\n'
         'Оберіть частину статті для перегляду фабул:',
         reply_markup=get_art178_menu(),
-        parse_mode='Markdown',
+        parse_mode='HTML',
     )
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and 'ч. 1' in message.text
     and '178' in message.text
 )
 def art178_part1_info(message):
     text = (
-        '🍺 **ПРИКЛАДИ ФАБУЛ ЗА Ч. 1 ст. 178 КУпАП**\n\n'
-        '📌 **1. Поява у п’яному вигляді:**\n'
+        '🍺 <b>ПРИКЛАДИ ФАБУЛ ЗА Ч. 1 ст. 178 КУпАП</b>\n\n'
+        '📌 <b>1. Поява у п’яному вигляді:</b>\n'
         '21.11.2016 об 17.00 у м.Київ, Солом’янський р-н, по вул. Донецька 10, гр.'
         ' (ПІБ) біля (зупинки громадського транспорту, під’їзд житлового'
         ' будинку, громадському транспорті, дитячому майданчику, школа, лікарня,'
@@ -702,7 +703,7 @@ def art178_part1_info(message):
         ' з місця на місце, нечітка мова, лежав на землі,) чим ображав людську'
         ' гідність та громадську мораль.\n\n'
         '───────────────────\n\n'
-        '📌 **2. Розпивання:**\n'
+        '📌 <b>2. Розпивання:</b>\n'
         '21.11.2016 об 17.00 у м.Київ, Солом’янський р-н, по вул. Донецька 10, гр.'
         ' (ПІБ) біля (зупинки громадського транспорту, під’їзд житлового'
         ' будинку, громадському транспорті, дитячому майданчику, школа, лікарня,'
@@ -710,19 +711,19 @@ def art178_part1_info(message):
         ' парках, та інше) розпивав пиво «Оболонь», ємкістю 0,5 л. (алкогольний'
         ' напій – горілка «Державна», слабоалкогольний напій – «Бірмікс»).'
     )
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    bot.send_message(message.chat.id, text, parse_mode='HTML')
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and 'ч. 2' in message.text
     and '178' in message.text
 )
 def art178_part2_info(message):
     text = (
-        '🍻 **ПРИКЛАДИ ФАБУЛ ЗА Ч. 2 ст. 178 КУпАП (Повторно протягом'
-        ' року)**\n\n'
-        '📌 **1. Поява у п’яному вигляді (повторність):**\n'
+        '🍻 <b>ПРИКЛАДИ ФАБУЛ ЗА Ч. 2 ст. 178 КУпАП (Повторно протягом'
+        ' року)</b>\n\n'
+        '📌 <b>1. Поява у п’яному вигляді (повторність):</b>\n'
         '21.11.2016 об 17.00 у м.Київ, Солом’янський р-н, по вул. Донецька 10, гр.'
         ' (ПІБ) біля (зупинки громадського транспорту, під’їзд житлового'
         ' будинку, громадському транспорті, дитячому майданчику, школа, лікарня,'
@@ -733,7 +734,7 @@ def art178_part2_info(message):
         ' гідність та громадську мораль, чим вчинив повторно порушення протягом'
         ' року.\n\n'
         '───────────────────\n\n'
-        '📌 **2. Розпивання (повторність):**\n'
+        '📌 <b>2. Розпивання (повторність):</b>\n'
         '21.11.2016 об 17.00 у м.Київ, Солом’янський р-н, по вул. Донецька 10, гр.'
         ' (ПІБ) біля (зупинки громадського транспорту, під’їзд житлового'
         ' будинку, громадському транспорті, дитячому майданчику, школа, лікарня,'
@@ -742,19 +743,19 @@ def art178_part2_info(message):
         ' напій – горілка «Державна», слабоалкогольний напій – «Бірмікс»), чим'
         ' вчинив повторно порушення протягом року.'
     )
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    bot.send_message(message.chat.id, text, parse_mode='HTML')
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and 'ч. 3' in message.text
     and '178' in message.text
 )
 def art178_part3_info(message):
     text = (
-        '🍷 **ПРИКЛАДИ ФАБУЛ ЗА Ч. 3 ст. 178 КУпАП (Двічі піддавався стягненню'
-        ' протягом року)**\n\n'
-        '📌 **1. Поява у п’яному вигляді:**\n'
+        '🍷 <b>ПРИКЛАДИ ФАБУЛ ЗА Ч. 3 ст. 178 КУпАП (Двічі піддавався стягненню'
+        ' протягом року)</b>\n\n'
+        '📌 <b>1. Поява у п’яному вигляді:</b>\n'
         '21.11.2016 об 17.00 у м.Київ, Солом’янський р-н, по вул. Донецька 10, гр.'
         ' (ПІБ) біля (зупинки громадського транспорту, під’їзд житлового'
         ' будинку, громадському транспорті, дитячому майданчику, школа, лікарня,'
@@ -765,7 +766,7 @@ def art178_part3_info(message):
         ' гідність та громадську мораль, та двічі протягом року піддавався'
         ' адміністративному стягненню.\n\n'
         '───────────────────\n\n'
-        '📌 **2. Розпивання:**\n'
+        '📌 <b>2. Розпивання:</b>\n'
         '21.11.2016 об 17.00 у м.Київ, Солом’янський р-н, по вул. Донецька 10, гр.'
         ' (ПІБ) біля (зупинки громадського транспорту, під’їзд житлового'
         ' будинку, громадському транспорті, дитячому майданчику, школа, лікарня,'
@@ -774,14 +775,14 @@ def art178_part3_info(message):
         ' напій – горілка «Державна», слабоалкогольний напій – «Бірмікс»), та'
         ' двічі протягом року піддавався адміністративному стягненню.'
     )
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    bot.send_message(message.chat.id, text, parse_mode='HTML')
 
 
 # --- КУпАП: ст. 175-1 ---
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and ('175-1' in message.text or 'Куріння' in message.text)
     and 'ч. 1' not in message.text
     and 'ч. 2' not in message.text
@@ -796,24 +797,24 @@ def smoking_category_select(message):
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and ('ч. 1' in message.text or 'ч.1' in message.text or 'ч 1' in message.text)
     and '175-1' in message.text
 )
 def smoking_part1_info(message):
     text = (
-        '🚬 **ч. 1 ст. 175-1 КУпАП — Куріння тютюнових виробів у заборонених'
-        ' місцях**\n\n'
-        '📜 **Закон України від 22.09.2005 № 2899-IV.**\n\n'
-        '⚖️ **Приклад фабули:**\n'
+        '🚬 <b>ч. 1 ст. 175-1 КУпАП — Куріння тютюнових виробів у заборонених'
+        ' місцях</b>\n\n'
+        '📜 <b>Закон України від 22.09.2005 № 2899-IV.</b>\n\n'
+        '⚖️ <b>Приклад фабули:</b>\n'
         '21.11.2016 об 17.00 у м. Рівному по вул. Київській, гр. (ПІБ) біля'
         ' (зупинки громадського транспорту, під’їзд житлового будинку,'
         ' громадському транспорті, дитячому майданчику, школа, лікарня, аптека,'
         ' магазин та інше) курив тютюновий виріб - сигарети «Море», у місці де це'
         ' заборонено Законом від 22.09.2005 № 2899-IV.\n\n'
         '───────────────────\n\n'
-        "🏛 **Громадське місце** - частина (частини) будь-якої будівлі, споруди, яка доступна або відкрита для населення вільно, чи за запрошенням, або за плату, постійно, періодично або час від часу, в том числі під'їзди, а також підземні переходи, стадіони.\n\n"
-        '📌 **Стаття 13 Закону № 2899-IV:**\n'
+        "🏛 <b>Громадське місце</b> - частина (частини) будь-якої будівлі, споруди, яка доступна або відкрита для населення вільно, чи за запрошенням, або за плату, постійно, періодично або час від часу, в том числі під'їзди, а також підземні переходи, стадіони.\n\n"
+        '📌 <b>Стаття 13 Закону № 2899-IV:</b>\n'
         '1) у ліфтах і таксофонах;\n'
         '2) у приміщеннях та на території закладів охорони здоров’я;\n'
         '3) у приміщеннях та на території навчальних закладів;\n'
@@ -829,27 +830,27 @@ def smoking_part1_info(message):
         '11) у приміщеннях органов державної влади та органов місцевого'
         ' самоврядування, інших державних установ;\n'
         '12) на стаціонарно обладнаних зупинках маршрутних транспортних засобів.\n\n'
-        '⛔️ **За забороняється, крім спеціально відведених для цього місць,'
-        ' куріння тютюнових виробів:**\n'
+        '⛔️ <b>За забороняється, крім спеціально відведених для цього місць,'
+        ' куріння тютюнових виробів:</b>\n'
         '1) у приміщеннях підприємств, установ та організацій усіх форм'
         ' власності;\n'
         '2) у приміщеннях готелів та аналогічних засобів розміщення громадян;\n'
         '3) у приміщеннях гуртожитків;\n'
         '4) в аеропортах та на вокзалах.'
     )
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    bot.send_message(message.chat.id, text, parse_mode='HTML')
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and ('ч. 2' in message.text or 'ч.2' in message.text or 'ч 2' in message.text)
     and '175-1' in message.text
 )
 def smoking_part2_info(message):
     text = (
-        '🚭 **ч. 2 ст. 175-1 КУпАП — Повторне протягом року вчинення'
-        ' правопорушення**\n\n'
-        '⚖️ **Приклад фабули:**\n'
+        '🚭 <b>ч. 2 ст. 175-1 КУпАП — Повторне протягом року вчинення'
+        ' правопорушення</b>\n\n'
+        '⚖️ <b>Приклад фабули:</b>\n'
         '21.11.2016 об 17.00 у м. Рівному по вул. Київській, гр. (ПІБ) біля'
         ' (зупинки громадського транспорту, під’їзд житлового будинку,'
         ' громадському транспорті, дитячому майданчику, школа, лікарня, аптека,'
@@ -857,14 +858,14 @@ def smoking_part2_info(message):
         ' заборонено Законом від 22.09.2005 № 2899-IV, чим повторно вчинив'
         ' правопорушення.'
     )
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    bot.send_message(message.chat.id, text, parse_mode='HTML')
 
 
 # --- Алгоритми ---
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and 'Алгоритми' in message.text
+    func=lambda message: message.text is not None and 'Алгоритми' in message.text
 )
 def algorithms_category_select(message):
     bot.send_message(
@@ -875,7 +876,7 @@ def algorithms_category_select(message):
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and 'виявленні ВНП' in message.text
+    func=lambda message: message.text is not None and 'виявленні ВНП' in message.text
 )
 def explosives_algorithm_info(message):
     text = (
@@ -942,7 +943,7 @@ def handle_vnp_report_example(call):
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and 'наркотичних речовин' in message.text.lower()
+    func=lambda message: message.text is not None and 'наркотичних речовин' in message.text.lower()
 )
 def drugs_algorithm_info(message):
     text = (
@@ -994,29 +995,29 @@ def handle_drugs_callbacks(call):
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and 'від 16 до 18 років' in message.text
 )
 def over16_algorithm_info(message):
     text = (
-        '🧑‍🎓 **Фіксування адміністративного правопорушення, вчиненого'
-        ' неповнолітнім, віком від 16 до 18 років**\n\n'
-        '📌 *Примітка: складається протокол на неповнолітнього*\n\n'
-        '• **Фіксація правопорушення**, збирання доказів або отримання будь-яких'
+        '🧑‍🎓 <b>Фіксування адміністративного правопорушення, вчиненого'
+        ' неповнолітнім, віком від 16 до 18 років</b>\n\n'
+        '📌 <i>Примітка: складається протокол на неповнолітнього</i>\n\n'
+        '• <b>Фіксація правопорушення</b>, збирання доказів або отримання будь-яких'
         ' фактичних даних, які свідчать про вчинення правопорушення.\n'
-        '*(Примітка: реєстрація події — потрібно уточнювати)*\n'
-        '• **Встановлення особи** (учень якого класу, хто класний керівник).\n'
-        '• **Повідомити** адміністрацію навчального закладу, безпосереднього'
+        '<i>(Примітка: реєстрація події — потрібно уточнювати)</i>\n'
+        '• <b>Встановлення особи</b> (учень якого класу, хто класний керівник).\n'
+        '• <b>Повідомити</b> адміністрацію навчального закладу, безпосереднього'
         ' керівника СОБ, батьків (запросити до навчального закладу).\n'
-        '• **За згодою батьків** або інших законних представників та у їх'
+        '• <b>За згодою батьків</b> або інших законних представників та у їх'
         ' присутності, відібрати пояснення у неповнолітнього, який вчинив'
         ' правопорушення.\n'
-        '• **Кваліфікувати** правопорушення відповідно до КУпАП.\n'
-        '• **Роз’яснити права** особи, яка притягається до адміністративної'
-        ' відповідальності, визначені статтею 268 КУпАП та **скласти протокол на'
-        ' неповнолітнього** (обов’язково у присутності батьків, усиновителів,'
+        '• <b>Кваліфікувати</b> правопорушення відповідно до КУпАП.\n'
+        '• <b>Роз’яснити права</b> особи, яка притягається до адміністративної'
+        ' відповідальності, визначені статтею 268 КУпАП та <b>скласти протокол на'
+        ' неповнолітнього</b> (обов’язково у присутності батьків, усиновителів,'
         ' опікунів або піклувальників).\n\n'
-        '📎 **ДО ПРОТОКОЛУ ДОДАЄТЬСЯ:**\n'
+        '📎 <b>ДО ПРОТОКОЛУ ДОДАЄТЬСЯ:</b>\n'
         '1. РАПОРТ\n'
         '2. ПРОТОКОЛ ЗАСІДАННЯ\n'
         '3. ПОЯСНЕННЯ УЧАСНИКІВ ПОДІЇ\n'
@@ -1024,33 +1025,33 @@ def over16_algorithm_info(message):
         '5. КОПІЯ ПАСПОРТА (ПРАВОПОРУШНИКА)\n'
         '7. Інші фактичні дані, які можуть свідчити про вчинення правопорушення (відео, фото, інше...)'
     )
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    bot.send_message(message.chat.id, text, parse_mode='HTML')
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and 'від 14 до 16 років' in message.text
 )
 def over14_algorithm_info(message):
     text = (
-        '🎒 **Фіксування адміністративного правопорушення, вчиненого'
-        ' неповнолітнім, віком від 14 до 16 років**\n\n'
-        '📌 *Примітка: складається протокол за ч.3 ст. 184 КУпАП*\n\n'
-        '• **Фіксація правопорушення**, збирання доказів або будь-яких фактичних'
+        '🎒 <b>Фіксування адміністративного правопорушення, вчиненого'
+        ' неповнолітнім, віком від 14 до 16 років</b>\n\n'
+        '📌 <i>Примітка: складається протокол за ч.3 ст. 184 КУпАП</i>\n\n'
+        '• <b>Фіксація правопорушення</b>, збирання доказів або будь-яких фактичних'
         ' даних, які свідчать про вчинення правопорушення.\n'
-        '*(Примітка: реєстрація події — потрібно уточнювати)*\n'
-        '• **Встановлення особи** (учень якого класу, хто класний керівник).\n'
-        '• **Повідомити** адміністрацію навчального закладу, безпосереднього'
+        '<i>(Примітка: реєстрація події — потрібно уточнювати)</i>\n'
+        '• <b>Встановлення особи</b> (учень якого класу, хто класний керівник).\n'
+        '• <b>Повідомити</b> адміністрацію навчального закладу, безпосереднього'
         ' керівника СОБ, батьків (запросити до навчального закладу).\n'
-        '• **За згодою батьків** або інших законних представників, у присутності'
+        '• <b>За згодою батьків</b> або інших законних представників, у присутності'
         ' психолога, класного керівника відібрати пояснення у неповнолітнього,'
         ' який вчинив правопорушення, та свідків.\n'
-        '• **Кваліфікувати** правопорушення відповідно до КУпАП.\n'
-        '• **Роз’яснити права** особи, яка притягається до адміністративної'
+        '• <b>Кваліфікувати</b> правопорушення відповідно до КУпАП.\n'
+        '• <b>Роз’яснити права</b> особи, яка притягається до адміністративної'
         ' відповідальності, визначені статтею 268 КУпАП та статтею 63 КУ,'
-        ' **скласти протокол на одного із батьків** або усиновителів, опікунів,'
-        ' піклувальників за **ч.3 ст. 184 КУпАП**.\n\n'
-        '📎 **ДО ПРОТОКОЛУ ДОДАЄТЬСЯ:**\n'
+        ' <b>скласти протокол на одного із батьків</b> або усиновителів, опікунів,'
+        ' піклувальників за <b>ч.3 ст. 184 КУпАП</b>.\n\n'
+        '📎 <b>ДО ПРОТОКОЛУ ДОДАЄТЬСЯ:</b>\n'
         '1. РАПОРТ\n'
         '2. ПРОТОКОЛ ЗАСІДАННЯ\n'
         '3. ПОЯСНЕННЯ УЧАСНИКІВ ПОДІЇ\n'
@@ -1058,37 +1059,37 @@ def over14_algorithm_info(message):
         '5. КОПІЯ ПАСПОРТА (ПРАВОПОРУШНИКА)\n'
         '7. Інші фактичні дані, які могут свідчити про вчинення правопорушення (відео, фото, інше...)'
     )
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    bot.send_message(message.chat.id, text, parse_mode='HTML')
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and 'до 14 років' in message.text
+    func=lambda message: message.text is not None and 'до 14 років' in message.text
 )
 def under14_algorithm_info(message):
     text = (
-        '👶 **Фіксування адміністративного правопорушення, вчиненого малолітніми,'
+        '👶 <b>Фіксування адміністративного правопорушення, вчиненого малолітніми,'
         ' віком до 14 років, або ухилення батьків чи осіб, які їх замінюють, від'
-        " виконання передбачених законодавством обов'язків**\n\n"
-        '📌 *Примітка: в такому випадку складається протокол за ч.1 ст. 184 КУпАП'
-        ' (можлива повторність за ч.2 ст.184 КУпАП)*\n\n'
-        '• **Фіксація правопорушення**, збирання доказів або отримання будь-яких'
+        " виконання передбачених законодавством обов'язків</b>\n\n"
+        '📌 <i>Примітка: в такому випадку складається протокол за ч.1 ст. 184 КУпАП'
+        ' (можлива повторність за ч.2 ст.184 КУпАП)</i>\n\n'
+        '• <b>Фіксація правопорушення</b>, збирання доказів або отримання будь-яких'
         ' фактичних даних, які свідчать про вчинення правопорушення.\n'
-        '*(Примітка: реєстрація події — потрібно уточнювати)*\n'
-        '• **Встановлення особи** (учень якого класу, хто класний керівник).\n'
-        '• **Повідомити** адміністрацію навчального закладу, безпосереднього'
+        '<i>(Примітка: реєстрація події — потрібно уточнювати)</i>\n'
+        '• <b>Встановлення особи</b> (учень якого класу, хто класний керівник).\n'
+        '• <b>Повідомити</b> адміністрацію навчального закладу, безпосереднього'
         ' керівника СОБ, батьків (запросити до навчального закладу).\n'
-        '• **За згодою батьків** або інших законних представників, у присутності'
+        '• <b>За згодою батьків</b> або інших законних представників, у присутності'
         ' психолога, класного керівника відібрати пояснення у малолітнього, який'
         ' вчинив правопорушення, та свідків.\n'
-        '• **Кваліфікувати** правопорушення відповідно до КУпАП, **перевірити'
-        ' повторність** (повторними вважаються правопорушення, вчинені протягом'
+        '• <b>Кваліфікувати</b> правопорушення відповідно до КУпАП, <b>перевірити'
+        ' повторність</b> (повторними вважаються правопорушення, вчинені протягом'
         ' року з моменту набрання законної сили рішення суду).\n'
-        '• **Роз’яснити права** особи, яка притягається до адміністративної'
+        '• <b>Роз’яснити права</b> особи, яка притягається до адміністративної'
         ' відповідальності, визначені статтею 268 КУпАП та статтею 63 КУ,'
-        ' **скласти протокол на одного із батьків** або усиновителів, опікунів,'
-        ' піклувальників за **ч.1 ст. 184** (у разі повторності — **ч.2 ст. 184**)'
+        ' <b>скласти протокол на одного із батьків</b> або усиновителів, опікунів,'
+        ' піклувальників за <b>ч.1 ст. 184</b> (у разі повторності — <b>ч.2 ст. 184</b>)'
         ' КУпАП за ухилення від обов’язків щодо виховання.\n\n'
-        '📎 **ДО ПРОТОКОЛУ ДОДАЄТЬСЯ:**\n'
+        '📎 <b>ДО ПРОТОКОЛУ ДОДАЄТЬСЯ:</b>\n'
         '1. РАПОРТ\n'
         '2. ПРОТОКОЛ ЗАСІДАННЯ (копія)\n'
         '3. ПОЯСНЕННЯ УЧАСНИКІВ ПОДІЇ\n'
@@ -1097,14 +1098,14 @@ def under14_algorithm_info(message):
         '6. КОПІЇ ПАСПОРТА (БАТЬКІВ)\n'
         '7. Інші фактичні дані, які можуть свідчити про вчинення правопорушення (відео, фото, інше...)'
     )
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    bot.send_message(message.chat.id, text, parse_mode='HTML')
 
 
 # --- Нормативно-правова база ---
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and (
         'Постанови/Накази' in message.text
         or 'Постанови' in message.text
@@ -1120,7 +1121,7 @@ def docs_category_select(message):
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and 'купап' in message.text.lower()
+    func=lambda message: message.text is not None and 'купап' in message.text.lower()
 )
 def doc_kupap_info(message):
     markup = types.InlineKeyboardMarkup()
@@ -1132,14 +1133,14 @@ def doc_kupap_info(message):
     )
     bot.send_message(
         message.chat.id,
-        '⚖️ **Кодекс України про адміністративні правопорушення (КУпАП)**',
-        parse_mode='Markdown',
+        '⚖️ <b>Кодекс України про адміністративні правопорушення (КУпАП)</b>',
+        parse_mode='HTML',
         reply_markup=markup,
     )
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and 'кримінальний кодекс' in message.text.lower()
 )
 def doc_kk_info(message):
@@ -1152,14 +1153,14 @@ def doc_kk_info(message):
     )
     bot.send_message(
         message.chat.id,
-        '⚖️ **Кримінальний кодекс України (ККУ)**',
-        parse_mode='Markdown',
+        '⚖️ <b>Кримінальний кодекс України (ККУ)</b>',
+        parse_mode='HTML',
         reply_markup=markup,
     )
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and 'сімейний кодекс' in message.text.lower()
 )
 def doc_family_code_info(message):
@@ -1172,14 +1173,14 @@ def doc_family_code_info(message):
     )
     bot.send_message(
         message.chat.id,
-        '⚖️ **Сімейний кодекс України**',
-        parse_mode='Markdown',
+        '⚖️ <b>Сімейний кодекс України</b>',
+        parse_mode='HTML',
         reply_markup=markup,
     )
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and 'національну поліцію' in message.text.lower()
 )
 def doc_police_law_info(message):
@@ -1192,14 +1193,14 @@ def doc_police_law_info(message):
     )
     bot.send_message(
         message.chat.id,
-        '👮 **Закон України «Про Національну поліцію»**',
-        parse_mode='Markdown',
+        '👮 <b>Закон України «Про Національну поліцію»</b>',
+        parse_mode='HTML',
         reply_markup=markup,
     )
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and message.text == '🎓 ЗУ Про освіту'
+    func=lambda message: message.text is not None and message.text == '🎓 ЗУ Про освіту'
 )
 def doc_education_law_info(message):
     markup = types.InlineKeyboardMarkup()
@@ -1211,14 +1212,14 @@ def doc_education_law_info(message):
     )
     bot.send_message(
         message.chat.id,
-        '🎓 **Закон України «Про освіту»**',
-        parse_mode='Markdown',
+        '🎓 <b>Закон України «Про освіту»</b>',
+        parse_mode='HTML',
         reply_markup=markup,
     )
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and 'середню освіту' in message.text.lower()
 )
 def doc_sec_education_law_info(message):
@@ -1231,14 +1232,14 @@ def doc_sec_education_law_info(message):
     )
     bot.send_message(
         message.chat.id,
-        '🏫 **Закон України «Про повну загальну середню освіту»**',
-        parse_mode='Markdown',
+        '🏫 <b>Закон України «Про повну загальну середню освіту»</b>',
+        parse_mode='HTML',
         reply_markup=markup,
     )
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and 'охорону дитинства' in message.text.lower()
 )
 def doc_child_protection_info(message):
@@ -1251,14 +1252,14 @@ def doc_child_protection_info(message):
     )
     bot.send_message(
         message.chat.id,
-        '👶 **Закон України «Про охорону дитинства»**',
-        parse_mode='Markdown',
+        '👶 <b>Закон України «Про охорону дитинства»</b>',
+        parse_mode='HTML',
         reply_markup=markup,
     )
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and '684' in message.text
+    func=lambda message: message.text is not None and '684' in message.text
 )
 def doc_684_info(message):
     markup = types.InlineKeyboardMarkup()
@@ -1270,14 +1271,14 @@ def doc_684_info(message):
     )
     bot.send_message(
         message.chat.id,
-        '🏛 **Постанова КМУ № 684**',
-        parse_mode='Markdown',
+        '🏛 <b>Постанова КМУ № 684</b>',
+        parse_mode='HTML',
         reply_markup=markup,
     )
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and '663' in message.text
+    func=lambda message: message.text is not None and '663' in message.text
 )
 def doc_663_info(message):
     markup = types.InlineKeyboardMarkup()
@@ -1289,14 +1290,14 @@ def doc_663_info(message):
     )
     bot.send_message(
         message.chat.id,
-        '📋 **Наказ МВС України № 663**',
-        parse_mode='Markdown',
+        '📋 <b>Наказ МВС України № 663</b>',
+        parse_mode='HTML',
         reply_markup=markup,
     )
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and '1646' in message.text
+    func=lambda message: message.text is not None and '1646' in message.text
 )
 def doc_1646_info(message):
     markup = types.InlineKeyboardMarkup()
@@ -1308,14 +1309,14 @@ def doc_1646_info(message):
     )
     bot.send_message(
         message.chat.id,
-        '📋 **Наказ МОН України № 1646**',
-        parse_mode='Markdown',
+        '📋 <b>Наказ МОН України № 1646</b>',
+        parse_mode='HTML',
         reply_markup=markup,
     )
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and '1245' in message.text
+    func=lambda message: message.text is not None and '1245' in message.text
 )
 def doc_1245_info(message):
     markup = types.InlineKeyboardMarkup()
@@ -1327,14 +1328,14 @@ def doc_1245_info(message):
     )
     bot.send_message(
         message.chat.id,
-        '🏛 **Постанова КМУ № 1245**',
-        parse_mode='Markdown',
+        '🏛 <b>Постанова КМУ № 1245</b>',
+        parse_mode='HTML',
         reply_markup=markup,
     )
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and message.text == '🏛 Постанова № 70'
+    func=lambda message: message.text is not None and message.text == '🏛 Постанова № 70'
 )
 def doc_70_info(message):
     markup = types.InlineKeyboardMarkup()
@@ -1346,14 +1347,14 @@ def doc_70_info(message):
     )
     bot.send_message(
         message.chat.id,
-        '🏛 **Постанова КМУ № 70**',
-        parse_mode='Markdown',
+        '🏛 <b>Постанова КМУ № 70</b>',
+        parse_mode='HTML',
         reply_markup=markup,
     )
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and ('685' in message.text or '1013' in message.text)
 )
 def doc_685_1013_info(message):
@@ -1366,14 +1367,14 @@ def doc_685_1013_info(message):
     )
     bot.send_message(
         message.chat.id,
-        '📋 **Спільний наказ № 685/1013**',
-        parse_mode='Markdown',
+        '📋 <b>Спільний наказ № 685/1013</b>',
+        parse_mode='HTML',
         reply_markup=markup,
     )
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and '1395' in message.text
+    func=lambda message: message.text is not None and '1395' in message.text
 )
 def doc_1395_info(message):
     markup = types.InlineKeyboardMarkup()
@@ -1385,14 +1386,14 @@ def doc_1395_info(message):
     )
     bot.send_message(
         message.chat.id,
-        '📋 **Наказ МВС України № 1395**',
-        parse_mode='Markdown',
+        '📋 <b>Наказ МВС України № 1395</b>',
+        parse_mode='HTML',
         reply_markup=markup,
     )
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and '1376' in message.text
+    func=lambda message: message.text is not None and '1376' in message.text
 )
 def doc_1376_info(message):
     markup = types.InlineKeyboardMarkup()
@@ -1404,14 +1405,14 @@ def doc_1376_info(message):
     )
     bot.send_message(
         message.chat.id,
-        '📋 **Наказ МВС України № 1376**',
-        parse_mode='Markdown',
+        '📋 <b>Наказ МВС України № 1376</b>',
+        parse_mode='HTML',
         reply_markup=markup,
     )
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and message.text == '📋 Наказ № 70'
+    func=lambda message: message.text is not None and message.text == '📋 Наказ № 70'
 )
 def doc_70_order_info(message):
     markup = types.InlineKeyboardMarkup()
@@ -1423,8 +1424,8 @@ def doc_70_order_info(message):
     )
     bot.send_message(
         message.chat.id,
-        '📋 **Наказ МВС України № 70**',
-        parse_mode='Markdown',
+        '📋 <b>Наказ МВС України № 70</b>',
+        parse_mode='HTML',
         reply_markup=markup,
     )
 
@@ -1433,7 +1434,7 @@ def doc_70_order_info(message):
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and ('173-2' in message.text or 'Домашнє насильство' in message.text)
 )
 def violence_category_select(message):
@@ -1445,29 +1446,29 @@ def violence_category_select(message):
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and ('дитини' in message.text.lower() or 'дитин' in message.text.lower())
     and '122' not in message.text
 )
 def child_violence_info(message):
     fabula_text_1 = (
-        '⚖️ **ПРИКЛАД ФАБУЛЫ ЗА Ч. 2 СТ. 173-2 КУпАП**\n'
-        '*(постраждала особа — присутня дитина)*\n\n'
+        '⚖️ <b>ПРИКЛАД ФАБУЛЫ ЗА Ч. 2 СТ. 173-2 КУпАП</b>\n'
+        '<i>(постраждала особа — присутня дитина)</i>\n\n'
         '«01.01.2026 близько 20:00 в приміщенні ПРУ КЗ «Харківський ліцей #153»'
         ' який знаходився за адресою: м. Харків, просп. Аерокосмічний, буд.1, кв.'
         ' 1, ПІБ (кривдник) вчинив домашнє насильство психологічного характеру у'
         ' відношенні дружини, ПІБ (постраждала особа), у присутності дитини'
         ' (сина, дочки, племінника…) ПІБ, дата народження, чим була завдана'
         ' шкода ПСИХІЧНОМУ здоров’ю потерпілого».\n\n'
-        'ℹ️ *Якщо при вчиненні домашнього насильства (адміністративного'
+        'ℹ️ <i>Якщо при вчиненні домашнього насильства (адміністративного'
         ' характеру) відносно дорослої особи присутня дитина (від народження до 18'
         ' років) складаються окремі протоколи: постраждала доросла особа та'
-        ' постраждала присутня дитина!*'
+        ' постраждала присутня дитина!</i>'
     )
 
     fabula_text_2 = (
-        '⚖️ **ПРИКЛАД ФАБУЛИ ЗА СТ. 173-2 КУпАП**\n'
-        '*(насильство відносно неповнолітньої/малолітньої дитини)*\n\n'
+        '⚖️ <b>ПРИКЛАД ФАБУЛИ ЗА СТ. 173-2 КУпАП</b>\n'
+        '<i>(насильство відносно неповнолітньої/малолітньої дитини)</i>\n\n'
         '«01.01.2026 близько 20:00 в приміщенні ПРУ КЗ «Харківський ліцей #153»'
         ' який знаходиться за адресою: м. Харків, просп. Аерокосмічний, буд.1, ПІБ'
         ' (кривдник) вчинив домашнє насильство психологічного характеру у'
@@ -1476,34 +1477,34 @@ def child_violence_info(message):
         ' була завдана шкода ПСИХІЧНОМУ здоров’ю потерпілої».'
     )
 
-    bot.send_message(message.chat.id, fabula_text_1, parse_mode='Markdown')
-    bot.send_message(message.chat.id, fabula_text_2, parse_mode='Markdown')
+    bot.send_message(message.chat.id, fabula_text_1, parse_mode='HTML')
+    bot.send_message(message.chat.id, fabula_text_2, parse_mode='HTML')
 
 
 # --- ОНОВЛЕНИЙ РОЗДІЛ: ст. 184 КУпАП ---
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and '184' in message.text
+    func=lambda message: message.text is not None and '184' in message.text
 )
 def art_184_info(message):
     text = (
-        '🚸 **ст. 184 КУпАП — Невиконання батьками або особами, що їх замінюють,'
-        " обов'язків щодо виховання дітей**\n\n📌 **Ч. 1:** Ухилення батьків або"
+        '🚸 <b>ст. 184 КУпАП — Невиконання батьками або особами, що їх замінюють,'
+        " обов'язків щодо виховання дітей</b>\n\n📌 <b>Ч. 1:</b> Ухилення батьків або"
         ' осіб, які їх замінюють, від виконання передбачених законодавством'
         ' обов’язків щодо забезпечення необхідних умов життя, навчання та'
-        ' виховання неповнолітніх дітей.\n\n⚖️ **Приклад фабули за ч. 1 ст. 184'
-        ' КУпАП:**\n26.10.2025 о 10 год. 00хв. за адресою місто Харків вул. Грубника, 24, в приміщенні КЗ "Харківський ліцей №153"  (ПІБ) 07.01.1979 р.н., ухилився від належного виконання батьківських обовязкв передбачених ч.1 ст.150 "Сімейного Кодексу України " , внаслідок чого її малолітній син (ПІБ) 14.10.2015 р.н., палив тютюнові вироби а саме електронну сигарету не встановленого типу.\n\n───────────────────\n\n📌 **Ч. 3:** Вчинення'
+        ' виховання неповнолітніх дітей.\n\n⚖️ <b>Приклад фабули за ч. 1 ст. 184'
+        ' КУпАП:</b>\n26.10.2025 о 10 год. 00хв. за адресою місто Харків вул. Грубника, 24, в приміщенні КЗ "Харківський ліцей №153"  (ПІБ) 07.01.1979 р.н., ухилився від належного виконання батьківських обовязкв передбачених ч.1 ст.150 "Сімейного Кодексу України " , внаслідок чого її малолітній син (ПІБ) 14.10.2015 р.н., палив тютюнові вироби а саме електронну сигарету не встановленого типу.\n\n───────────────────\n\n📌 <b>Ч. 3:</b> Вчинення'
         ' неповнолітніми віком від 14 до 16 років правопорушення, відповідальність'
         ' за яке передбачено цим Кодексом (крім ч. 3 або ч. 4 ст.'
-        ' 173-4).\n\n⚖️ **Приклад фабули за ч. 3 ст. 184 КУпАП:**\nГромадянка'
+        ' 173-4).\n\n⚖️ <b>Приклад фабули за ч. 3 ст. 184 КУпАП:</b>\nГромадянка'
         " (ПІБ) будучи матір'ю неповнолітнього (ПІБ) 2011 року народження, який не досяг 16-річного віку, 15.06.2026 вчинив домашнє насильство відносно своєї сестри, а саме умисні дії психологічного характеру: ображав словесно, погрожував вбити, чим завдав їй психологічних страждань, унаслідок чого завдано шкоди психічному здоров’ю (ПІБ) відповідальність за яке передбачена ст. 173-2 КУпАП, чим вчинила правопорушення, передбачене ч. 3 ст. 184 КУпАП."
     )
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    bot.send_message(message.chat.id, text, parse_mode='HTML')
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
+    func=lambda message: message.text is not None
     and '173' in message.text
     and '173-2' not in message.text
     and '173-4' not in message.text
@@ -1512,34 +1513,34 @@ def art_184_info(message):
 )
 def art_173_info(message):
     text = (
-        '🤪 **ст. 173 КУпАП — Дрібне хуліганство**\n\nДрібне хуліганство, тобто'
+        '🤪 <b>ст. 173 КУпАП — Дрібне хуліганство</b>\n\nДрібне хуліганство, тобто'
         ' нецензурна лайка в громадських місцях, образливе чіпляння до громадян та'
         ' інші подібні дії, що порушують громадський порядок і спокій'
-        ' громадян.\n\n⚖️ **Приклади фабул:**\n\n📌 **Варіант 1 (Нецензурна'
-        ' лайка):**\n01.01.2015 о 20 год. 05 хв. гр. (ПІБ),'
+        ' громадян.\n\n⚖️ <b>Приклади фабул:</b>\n\n📌 <b>Варіант 1 (Нецензурна'
+        ' лайка):</b>\n01.01.2015 о 20 год. 05 хв. гр. (ПІБ),'
         ' перебуваючи в стані алкогольного сп’яніння, у громадському місці біля'
         ' буд. № 76/1 по просп. Миру в Хмельницькому, висловлювався нецензурною'
         ' лайкою на адресу гр. (ПІБ) (або перехожих), чим порушував'
-        ' громадський порядок і спокій громадян.\n\n📌 **Варіант 2 (Справляння'
-        ' природних потреба):**\n10.09.2015 о 20 год. 05 хв. гр. (ПІБ)'
+        ' громадський порядок і спокій громадян.\n\n📌 <b>Варіант 2 (Справляння'
+        ' природних потреба):</b>\n10.09.2015 о 20 год. 05 хв. гр. (ПІБ)'
         ' в м. Хмельницькому по вул. Проскурівського підпілля, 15,'
         ' справляв природні потреби поблизу дверей офісу «Сонечко», чим своими'
         ' діями порушував громадський порядок.'
     )
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    bot.send_message(message.chat.id, text, parse_mode='HTML')
 
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and 'Про бота' in message.text
+    func=lambda message: message.text is not None and 'Про бота' in message.text
 )
 def about_bot_info(message):
     about_text = (
-        'ℹ️ **Про робочий помічник СОБ**\n\nЦей бот розроблений для швидкого'
+        'ℹ️ <b>Про робочий помічник СОБ</b>\n\nЦей бот розроблений для швидкого'
         ' доступу до необхідної нормативно-правової бази, фабул адміністративних'
         ' правопорушень та алгоритмів дій Інспектора Служби Освітньої'
-        ' Безпеки.\n\n👨‍💻 **З питань роботи бота звертайтеся до куратора.**'
+        ' Безпеки.\n\n👨‍💻 <b>З питань роботи бота звертайтеся до куратора.</b>'
     )
-    bot.send_message(message.chat.id, about_text, parse_mode='Markdown')
+    bot.send_message(message.chat.id, about_text, parse_mode='HTML')
 
 
 # --- Запуск ---
