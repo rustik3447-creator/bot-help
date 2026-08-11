@@ -1,7 +1,10 @@
+import json
 import os
 import threading
 import time
 from flask import Flask
+from google import genai
+from google.genai import types as genai_types
 import telebot
 from telebot import types
 
@@ -9,6 +12,8 @@ from telebot import types
 TOKEN = os.environ.get(
     'BOT_TOKEN', '8785665273:AAFikmkrKRnR9rYr4RoiSicvgDfGqz-VSeY'
 )
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+
 ADMIN_ID = 1014079912  # Ваш особистий Telegram ID
 
 # 📋 Список особистих Telegram ID людей, які отримують тривожні SOS в приватні повідомлення:
@@ -45,6 +50,12 @@ CUSTOM_NAMES = {
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
+# Ініціалізація Google Gemini Client
+gemini_client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
+
+# Сховище станів FSM для Конструктора Вікторин у пам'яті
+quiz_user_states = {}
+
 
 # Веб-сервер для утримання бота в активному стані (Keep-Alive)
 @app.route('/')
@@ -67,8 +78,8 @@ def get_main_menu():
     markup.add("🚸 ст. 184 Невиконання обов'язків", '🚷 Булінг')
     markup.add('🤪 ст. 173 Дрібне хуліганство', '🚬 ст. 175-1 Куріння')
     markup.add('📜 Постанови/Накази', '🧠 Алгоритми')
-    markup.add('ℹ️ Про бота')
-    markup.add('🚨 SOS (ТРИВОГА)')
+    markup.add('🎓 Конструктор вікторин')
+    markup.add('ℹ️ Про бота', '🚨 SOS (ТРИВОГА)')
     return markup
 
 
@@ -175,6 +186,38 @@ def back_to_bull_actions_inline():
     return markup
 
 
+# --- Inline-клавіатури для Конструктора Вікторин ---
+
+
+def quiz_topics_inline():
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    markup.add(
+        types.InlineKeyboardButton("🚗 Правила дорожнього руху (ПДР)", callback_data="qz_topic_pdr"),
+        types.InlineKeyboardButton("🌐 Кібербезпека та безпека в інтернеті", callback_data="qz_topic_cyber"),
+        types.InlineKeyboardButton("⚖️ Відповідальність неповнолітніх", callback_data="qz_topic_law"),
+        types.InlineKeyboardButton("🌊 Безпека на воді та ВНП", callback_data="qz_topic_safety")
+    )
+    return markup
+
+
+def quiz_grades_inline():
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    markup.add(
+        types.InlineKeyboardButton("🎒 1–4 класи (молодша школа)", callback_data="qz_grade_1_4"),
+        types.InlineKeyboardButton("🏫 5–9 класи (середня школа)", callback_data="qz_grade_5_9"),
+        types.InlineKeyboardButton("🎓 10–11 класи / Студенти", callback_data="qz_grade_10_11")
+    )
+    return markup
+
+
+def quiz_action_inline():
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    markup.add(
+        types.InlineKeyboardButton("✨ Згенерувати нову вікторину", callback_data="qz_restart")
+    )
+    return markup
+
+
 # --- Основні обробники ---
 
 
@@ -196,6 +239,127 @@ def back_to_main_menu(message):
     bot.send_message(
         message.chat.id, 'Повертаємось до головного меню:', reply_markup=get_main_menu()
     )
+
+
+# --- РОЗДІЛ: КОНСТРУКТОР ВІКТОРИН (GEMINI AI) ---
+
+
+@bot.message_handler(func=lambda message: bool(message.text) and 'Конструктор вікторин' in message.text)
+def handle_quiz_constructor(message):
+    quiz_user_states[message.chat.id] = {}
+    bot.send_message(
+        message.chat.id,
+        "🎓 <b>Конструктор інтерактивних вікторин (Gemini AI)</b>\n\n"
+        "Цей інструмент допоможе згенерувати інтерактивний тест/вікторину для проведення правопросвітницьких уроків у навчальних закладах.\n\n"
+        "<b>Крок 1 з 2:</b> Оберіть тематику вікторини:",
+        parse_mode="HTML",
+        reply_markup=quiz_topics_inline()
+    )
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith("qz_"))
+def handle_quiz_callbacks(call):
+    bot.answer_callback_query(call.id)
+    chat_id = call.message.chat.id
+
+    if call.data == "qz_restart":
+        quiz_user_states[chat_id] = {}
+        bot.send_message(
+            chat_id,
+            "<b>Крок 1 з 2:</b> Оберіть тематику вікторини:",
+            parse_mode="HTML",
+            reply_markup=quiz_topics_inline()
+        )
+        return
+
+    if call.data.startswith("qz_topic_"):
+        topics_map = {
+            "qz_topic_pdr": "Правила дорожнього руху (ПДР) для пішоходів та велосипедистів",
+            "qz_topic_cyber": "Кібербезпека, булінг в мережі та безпечний інтернет",
+            "qz_topic_law": "Адміністративна та кримінальна відповідальність неповнолітніх",
+            "qz_topic_safety": "Безпека біля водойм та мінна безпека (ВНП)"
+        }
+        selected_topic = topics_map.get(call.data, "Загальна безпека")
+        quiz_user_states[chat_id] = {"topic": selected_topic}
+
+        bot.edit_message_text(
+            chat_id=chat_id,
+            message_id=call.message.message_id,
+            text=f"📌 <b>Тема:</b> {selected_topic}\n\n<b>Крок 2 з 2:</b> Оберіть вікову групу (клас):",
+            parse_mode="HTML",
+            reply_markup=quiz_grades_inline()
+        )
+
+    elif call.data.startswith("qz_grade_"):
+        grades_map = {
+            "qz_grade_1_4": "Учні 1–4 класів (початкова школа, прості питяння з поясненнями)",
+            "qz_grade_5_9": "Учні 5–9 класів (середня школа, ситуативні задачі)",
+            "qz_grade_10_11": "Учні 10–11 класів та студенти (старша школа, норми законів та юридичні наслідки)"
+        }
+        selected_grade = grades_map.get(call.data, "Середня школа")
+        user_data = quiz_user_states.get(chat_id, {})
+        topic = user_data.get("topic", "Правові норми та безпека")
+
+        if not gemini_client:
+            bot.send_message(chat_id, "⚠️ **Помилка:** API ключ `GEMINI_API_KEY` не налаштований у змінних оточення.")
+            return
+
+        status_msg = bot.send_message(
+            chat_id,
+            "⏳ <b>Gemini AI генерує вікторину...</b> Зачекайте декілька секунд.",
+            parse_mode="HTML"
+        )
+
+        prompt = (
+            f"Ти — досвідчений Шкільний Офіцер Поліції (Служба Освітньої Безпеки).\n"
+            f"Створи інтерактивну вікторину з 5 запитань для проведення навчального уроку в школі.\n"
+            f"Тема: {topic}\n"
+            f"Цільова аудиторія: {selected_grade}\n\n"
+            f"Сформуй відповідь СТРOГО в форматі JSON з такою структурою:\n"
+            f"{{\n"
+            f'  "title": "Назва вікторини",\n'
+            f'  "questions": [\n'
+            f'    {{\n'
+            f'      "question": "Текст запитання",\n'
+            f'      "options": ["А) Варіант 1", "Б) Варіант 2", "В) Варіант 3", "Г) Варіант 4"],\n'
+            f'      "correct": "А) Варіант 1",\n'
+            f'      "explanation": "Коротке правове/виховне пояснення чому саме ця відповідь правильна"\n'
+            f'    }}\n'
+            f'  ]\n'
+            f'}}\n'
+        )
+
+        try:
+            response = gemini_client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=prompt,
+                config=genai_types.GenerateContentConfig(
+                    response_mime_type="application/json"
+                )
+            )
+
+            data = json.loads(response.text)
+
+            quiz_text = f"🎓 <b>{data.get('title', 'Шкільна вікторина')}</b>\n"
+            quiz_text += f"📌 <b>Тема:</b> {topic}\n"
+            quiz_text += f"👥 <b>Аудиторія:</b> {selected_grade}\n\n"
+            quiz_text += "───────────────────\n\n"
+
+            for idx, q in enumerate(data.get("questions", []), start=1):
+                quiz_text += f"❓ <b>Запитання {idx}:</b> {q.get('question')}\n"
+                for opt in q.get("options", []):
+                    quiz_text += f"  • {opt}\n"
+                quiz_text += f"\n✅ <b>Вірна відповідь:</b> {q.get('correct')}\n"
+                quiz_text += f"💡 <b>Пояснення інспектора:</b> {q.get('explanation')}\n\n"
+                quiz_text += "───────────────────\n\n"
+
+            bot.delete_message(chat_id, status_msg.message_id)
+            bot.send_message(chat_id, quiz_text, parse_mode="HTML", reply_markup=quiz_action_inline())
+
+        except Exception as e:
+            print(f"Помилка генерації вікторини через Gemini: {e}")
+            bot.delete_message(chat_id, status_msg.message_id)
+            bot.send_message(chat_id, "❌ Сталася помилка при генерації вікторини. Спробуйте ще раз пізніше.", reply_markup=quiz_action_inline())
 
 
 # --- ОБРОБНИК SOS ---
@@ -803,7 +967,6 @@ def explosives_algorithm_info(message):
         "10. <b>За потреби письмовий рапорт.</b>"
     )
     
-    # Inline-кнопка для прикладу рапорту ВНП
     markup = types.InlineKeyboardMarkup()
     btn_report = types.InlineKeyboardButton("📋 Приклад рапорту", callback_data="vnp_report_example")
     markup.add(btn_report)
@@ -1434,8 +1597,8 @@ def about_bot_info(message):
     about_text = (
         'ℹ️ **Про робочий помічник СОБ**\n\nЦей бот розроблений для швидкого'
         ' доступу до необхідної нормативно-правової бази, фабул адміністративних'
-        ' правопорушень та алгоритмів дій Інспектора Служби Освітньої'
-        ' Безпеки.\n\n👨‍💻 **З питань роботи бота звертайтеся до куратора.**'
+        ' правопорушень, алгоритмів дій Інспектора Служби Освітньої'
+        ' Безпеки та генерації навчальних вікторин за допомогою штучного інтелекту.\n\n👨‍💻 **З питань роботи бота звертайтеся до куратора.**'
     )
     bot.send_message(message.chat.id, about_text, parse_mode='Markdown')
 
