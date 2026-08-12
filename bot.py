@@ -11,6 +11,24 @@ TOKEN = os.environ.get(
 )
 ADMIN_ID = 1014079912  # Ваш особистий Telegram ID
 
+# 🔗 ПОСИЛАННЯ НА ГООГЛ ФОРМИ ДЛЯ ЩОДЕННОГО ЗВІТУ (Замініть значення в дужках на ваші посилання)
+URL_ZZSO_3 = "https://docs.google.com/forms/d/e/1FAIpQLSf7UMP606jWHYeo_AK3jJDQGgottGra_5RqBXUVvEC6ynSEsg/viewform?usp=sharing&ouid=113896150269870747135"
+URL_ZZSO_48 = "https://docs.google.com/forms/d/e/1FAIpQLScptL7an8je5Pf6JA1x1A7WzuvEfo4nLq62wGm_FtaK1Pvb7g/viewform?usp=sharing&ouid=113896150269870747135"
+URL_ZZSO_83 = "https://docs.google.com/forms/d/e/1FAIpQLSe3ORtsZxfBZbkcjDSGjrvYJBCDZxyF5IWO0Q7gxV5lChN09w/viewform?usp=sharing&ouid=113896150269870747135"
+URL_ZZSO_88 = "https://docs.google.com/forms/d/e/1FAIpQLSehRiroXcjcUg8O_V35nCwpyUMgrj05k7yekKz7zz9hkt-NUQ/viewform?usp=sharing&ouid=113896150269870747135"
+URL_ZZSO_91 = "https://docs.google.com/forms/d/e/1FAIpQLSfLIHh74OqWWtIFwdGRqTmpsUn2LYMvZEFj70nVvPisMs1Fdg/viewform?usp=sharing&ouid=113896150269870747135"
+URL_ZZSO_105 = "https://docs.google.com/forms/d/e/1FAIpQLSc4GrMxEuVhPhlf4DHo1k8N97NEJWM88N5jA2pZNCNgkEIMFQ/viewform?usp=sharing&ouid=113896150269870747135"
+URL_ZZSO_107 = "https://docs.google.com/forms/d/e/1FAIpQLSczgWsRoi24xSvOvUytDcenibGmYaizzoHnLytAmuak3f3CVg/viewform?usp=sharing&ouid=113896150269870747135"
+URL_ZZSO_124 = "https://docs.google.com/forms/d/e/1FAIpQLSc4_vvLkrjpBPBGnZZ_cKrpViMi_s473XYQJmgzz4TASle0JA/viewform?usp=sharing&ouid=113896150269870747135"
+URL_ZZSO_138 = "https://docs.google.com/forms/d/e/1FAIpQLSdXKbNTVbpJKrPVvu7c7SqrofG4-_Dlz_KMoJihxMCdxSa0hQ/viewform?usp=sharing&ouid=113896150269870747135"
+URL_ZZSO_152 = "https://docs.google.com/forms/d/e/1FAIpQLSdNL_1NCPnDlOYUxoNu2CWrFmL5AgD7vRhYO44ZPdfeF9eNtQ/viewform?usp=header"
+URL_ZZSO_153 = "https://docs.google.com/forms/d/e/1FAIpQLScNZIQQHbMUVV_COMfPfHDu5Otl6yX4rC-b_VVjUYHz4D-e9w/viewform?usp=header"
+URL_ZZSO_173 = "https://docs.google.com/forms/d/e/1FAIpQLScwt5Yj8vNVrAD5-5uJe1B63BqFCAh42Y9JK4cscM7jIvLAeg/viewform?usp=header"
+URL_ZZSO_MOBIL = "https://docs.google.com/forms/d/e/1FAIpQLSe_74oFERvLuLm9SIsiLGJklKeFr9RaJos4vZxEmSBjKMszeg/viewform?usp=header"
+URL_ZZSO_KOROTYCH = "https://docs.google.com/forms/d/e/1FAIpQLSeiwliHwey-IzZOGwNR2d4Ehxf1ByZCatFkSnj8SsMOQz7_bg/viewform?usp=header"
+URL_ZZSO_DZHERELO = "https://docs.google.com/forms/d/e/1FAIpQLScQPXp8-MjZC1rRHQYfDSCiHL1129lHJhqq14bDCKlS7h_RuA/viewform?usp=header"
+
+
 # 📋 Список особистих Telegram ID людей, які отримують тривожні SOS в приватні повідомлення:
 SOS_RECIPIENTS = [
     1014079912,  # Ваш ID
@@ -67,8 +85,35 @@ def get_main_menu():
     markup.add("🚸 ст. 184 Невиконання обов'язків", '🚷 Булінг')
     markup.add('🤪 ст. 173 Дрібне хуліганство', '🚬 ст. 175-1 Куріння')
     markup.add('📜 Постанови/Накази', '🧠 Алгоритми')
-    markup.add('ℹ️ Про бота')
+    markup.add('📊 Звіти', 'ℹ️ Про бота')
     markup.add('🚨 SOS (ТРИВОГА)')
+    return markup
+
+
+def get_reports_menu():
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
+    markup.add('📅 Щоденний звіт')
+    markup.add('🔙 Головне меню')
+    return markup
+
+
+def get_daily_reports_inline():
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    markup.add(types.InlineKeyboardButton("ЗЗСО №3", url=URL_ZZSO_3))
+    markup.add(types.InlineKeyboardButton("ЗЗСО №48", url=URL_ZZSO_48))
+    markup.add(types.InlineKeyboardButton("ЗЗСО №83", url=URL_ZZSO_83))
+    markup.add(types.InlineKeyboardButton("ЗЗСО №88", url=URL_ZZSO_88))
+    markup.add(types.InlineKeyboardButton("ЗЗСО №91", url=URL_ZZSO_91))
+    markup.add(types.InlineKeyboardButton("ЗЗСО №105", url=URL_ZZSO_105))
+    markup.add(types.InlineKeyboardButton("ЗЗСО №107", url=URL_ZZSO_107))
+    markup.add(types.InlineKeyboardButton("ЗЗСО №124", url=URL_ZZSO_124))
+    markup.add(types.InlineKeyboardButton("ЗЗСО №138", url=URL_ZZSO_138))
+    markup.add(types.InlineKeyboardButton("ЗЗСО №152", url=URL_ZZSO_152))
+    markup.add(types.InlineKeyboardButton("ЗЗСО №153", url=URL_ZZSO_153))
+    markup.add(types.InlineKeyboardButton("ЗЗСО №173", url=URL_ZZSO_173))
+    markup.add(types.InlineKeyboardButton("ЗЗСО Мобіль", url=URL_ZZSO_MOBIL))
+    markup.add(types.InlineKeyboardButton("ЗЗСО Коротичанський ліцей", url=URL_ZZSO_KOROTYCH))
+    markup.add(types.InlineKeyboardButton("ЗЗСО Джерело", url=URL_ZZSO_DZHERELO))
     return markup
 
 
@@ -218,6 +263,33 @@ def back_to_main_menu(message):
     )
 
 
+# --- РОЗДІЛ: ЗВІТИ ---
+
+
+@bot.message_handler(
+    func=lambda message: bool(message.text) and 'Звіти' in message.text
+)
+def handle_reports_section(message):
+    bot.send_message(
+        message.chat.id,
+        '📋 **Розділ подачі звітів**\nОберіть потрібну категорію:',
+        reply_markup=get_reports_menu(),
+        parse_mode='Markdown'
+    )
+
+
+@bot.message_handler(
+    func=lambda message: bool(message.text) and 'Щоденний звіт' in message.text
+)
+def handle_daily_reports_select(message):
+    bot.send_message(
+        message.chat.id,
+        '📅 **Оберіть ваш навчальний заклад (ЗЗСО) для подачі щоденного звіту:**',
+        reply_markup=get_daily_reports_inline(),
+        parse_mode='Markdown'
+    )
+
+
 # --- ОБРОБНИК SOS ---
 
 
@@ -279,7 +351,7 @@ def handle_sex_harassment_section(message):
         "1. Отримання інформації від учнів, вчителів тощо.\n"
         "2. Повідомити безпосереднє керівництво, адміністрацію ЗЗСО та батьків участников події.\n"
         "3. Спільно з адміністрацією ЗЗСО провести опитування учасників події.\n"
-        "4. Кваліфікувати правопорушення (встановити наявність відомостей кримінального чи адміністративного характеру).\n"
+        "4. Кваліфікувати правопорушення (встановити наявність відомостей кримінального чи адміністративного характера).\n"
         "5. За наявності відомостей кримінального характеру повідомити чергового ВП та здійснити реєстрацію за лінією 102.\n"
         "6. У разі відсутності відомостей кримінального характеру:\n"
         "   <i>У всіх випадках намагатись знайти якомога більше доказів (свідків, відео з відеокамер).</i>\n\n"
@@ -888,7 +960,7 @@ def smoking_part1_info(message):
         '3) у приміщеннях та на території навчальних закладів;\n'
         '4) на дитячих майданчиках;\n'
         '5) у приміщеннях та на території спортивних і фізкультурно-оздоровчих'
-        ' споруд та закладів фізичної культури і спорту;\n'
+        ' споруд та закладів физичної культури і спорту;\n'
         '6) у під’їздах житлових будинків;\n'
         '7) у підземних переходах;\n'
         '8) у транспорті загального користування, що використовується для'
