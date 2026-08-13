@@ -11,7 +11,7 @@ TOKEN = os.environ.get(
 )
 ADMIN_ID = 1014079912  # Ваш особистий Telegram ID
 
-# 🔗 ПОСИЛАННЯ НА ГООГЛ ФОРМИ ДЛЯ ЩОДЕННОГО ЗВІТУ (Замініть значення в дужках на ваші посилання)
+# 🔗 ПОСИЛАННЯ НА ГООГЛ ФОРМИ ДЛЯ ЩОДЕННОГО ЗВІТУ
 URL_ZZSO_3 = "https://docs.google.com/forms/d/e/1FAIpQLSf7UMP606jWHYeo_AK3jJDQGgottGra_5RqBXUVvEC6ynSEsg/viewform?usp=sharing&ouid=113896150269870747135"
 URL_ZZSO_48 = "https://docs.google.com/forms/d/e/1FAIpQLScptL7an8je5Pf6JA1x1A7WzuvEfo4nLq62wGm_FtaK1Pvb7g/viewform?usp=sharing&ouid=113896150269870747135"
 URL_ZZSO_83 = "https://docs.google.com/forms/d/e/1FAIpQLSe3ORtsZxfBZbkcjDSGjrvYJBCDZxyF5IWO0Q7gxV5lChN09w/viewform?usp=sharing&ouid=113896150269870747135"
@@ -27,7 +27,6 @@ URL_ZZSO_173 = "https://docs.google.com/forms/d/e/1FAIpQLScwt5Yj8vNVrAD5-5uJe1B6
 URL_ZZSO_MOBIL = "https://docs.google.com/forms/d/e/1FAIpQLSe_74oFERvLuLm9SIsiLGJklKeFr9RaJos4vZxEmSBjKMszeg/viewform?usp=header"
 URL_ZZSO_KOROTYCH = "https://docs.google.com/forms/d/e/1FAIpQLSeiwliHwey-IzZOGwNR2d4Ehxf1ByZCatFkSnj8SsMOQz7_bg/viewform?usp=header"
 URL_ZZSO_DZHERELO = "https://docs.google.com/forms/d/e/1FAIpQLScQPXp8-MjZC1rRHQYfDSCiHL1129lHJhqq14bDCKlS7h_RuA/viewform?usp=header"
-
 
 # 📋 Список особистих Telegram ID людей, які отримують тривожні SOS в приватні повідомлення:
 SOS_RECIPIENTS = [
@@ -63,20 +62,16 @@ CUSTOM_NAMES = {
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
-
 # Веб-сервер для утримання бота в активному стані (Keep-Alive)
 @app.route('/')
 def home():
     return 'Бот працює!'
 
-
 def run_flask():
     port = int(os.environ.get('PORT', 8080))
     app.run(host='0.0.0.0', port=port)
 
-
 # --- Клавіатури Головного Та Вкладених Меню ---
-
 
 def get_main_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
@@ -89,13 +84,11 @@ def get_main_menu():
     markup.add('🚨 SOS (ТРИВОГА)')
     return markup
 
-
 def get_reports_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     markup.add('📅 Щоденний звіт')
     markup.add('🔙 Головне меню')
     return markup
-
 
 def get_daily_reports_inline():
     markup = types.InlineKeyboardMarkup(row_width=1)
@@ -116,25 +109,18 @@ def get_daily_reports_inline():
     markup.add(types.InlineKeyboardButton("ЗЗСО Джерело", url=URL_ZZSO_DZHERELO))
     return markup
 
-
 def get_art178_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     markup.add('🍺 ч. 1 ст. 178 КУпАП', '🍻 ч. 2 ст. 178 КУпАП')
     markup.add('🍷 ч. 3 ст. 178 КУпАП', '🔙 Головне меню')
     return markup
 
-
 def get_art122_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-    markup.add(
-        '🛑 Порушення вимог дорожніх знаків', '🅿️ Порушення правил зупинки'
-    )
-    markup.add(
-        '🚘 Порушення правил стоянки', '♿️ Зупинка/стоянка для осіб з інвалідністю'
-    )
+    markup.add('🛑 Порушення вимог дорожніх знаків', '🅿️ Порушення правил зупинки')
+    markup.add('🚘 Порушення правил стоянки', '♿️ Зупинка/стоянка для осіб з інвалідністю')
     markup.add('🔙 Головне меню')
     return markup
-
 
 def get_smoking_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
@@ -142,13 +128,11 @@ def get_smoking_menu():
     markup.add('🔙 Головне меню')
     return markup
 
-
 def get_violence_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     markup.add('👶 Насильство відносно дитини / у присутності дитини')
     markup.add('🔙 Головне меню')
     return markup
-
 
 def get_docs_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
@@ -163,9 +147,9 @@ def get_docs_menu():
     markup.add('🔙 Головне меню')
     return markup
 
-
 def get_algorithms_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
+    markup.add('🚨 Домашнє насильство')
     markup.add('💜 Сексуальне домагання')
     markup.add('💣 Алгоритм дій при виявленні ВНП')
     markup.add('💊 Дії у разі виявлення наркотичних речовин в учня')
@@ -175,29 +159,36 @@ def get_algorithms_menu():
     markup.add('🔙 Головне меню')
     return markup
 
+# --- Inline-клавіатури для розділу "Домашнє насильство" ---
+
+def dv_main_inline():
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    btn_zzso = types.InlineKeyboardButton("🏫 В ЗЗСО", callback_data="dv_zzso")
+    btn_home = types.InlineKeyboardButton("🏠 Вдома", callback_data="dv_home")
+    markup.add(btn_zzso, btn_home)
+    return markup
+
+def back_to_dv_main_inline():
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("⬅️ Назад до вибору локації", callback_data="dv_main"))
+    return markup
 
 # --- Inline-клавіатури для розділу "Булінг" ---
 
-
 def bullying_main_inline():
-    """Головне меню розділу Булінг (1 кнопка)"""
     markup = types.InlineKeyboardMarkup(row_width=1)
     btn_alg = types.InlineKeyboardButton("📌 Алгоритм реагування", callback_data="bull_alg")
     markup.add(btn_alg)
     return markup
 
-
 def bullying_alg_inline():
-    """Кнопки після перегляду Алгоритму реагування"""
     markup = types.InlineKeyboardMarkup(row_width=1)
     btn_head = types.InlineKeyboardButton("🏛 Алгоритм керівника ЗЗСО", callback_data="bull_head")
     btn_actions = types.InlineKeyboardButton("📝 Подальші дії", callback_data="bull_actions")
     markup.add(btn_head, btn_actions)
     return markup
 
-
 def bullying_actions_inline():
-    """Меню вибору віку для Подальших дій"""
     markup = types.InlineKeyboardMarkup(row_width=1)
     btn_under_16 = types.InlineKeyboardButton("👶 До 16 років", callback_data="bull_under_16")
     btn_16_18 = types.InlineKeyboardButton("🧑 16–18 років", callback_data="bull_16_18")
@@ -206,23 +197,17 @@ def bullying_actions_inline():
     markup.add(btn_under_16, btn_16_18, btn_over_18, btn_back)
     return markup
 
-
 def back_to_bull_alg_inline():
-    """Кнопка повернення до Алгоритму"""
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton("⬅️ Назад до Алгоритму", callback_data="bull_alg"))
     return markup
 
-
 def back_to_bull_actions_inline():
-    """Кнопка повернення до категорій віку"""
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton("⬅️ Назад до категорій віку", callback_data="bull_actions"))
     return markup
 
-
 # --- Inline-клавіатури для розділу "Сексуальне домагання" ---
-
 
 def sex_harass_main_inline():
     markup = types.InlineKeyboardMarkup(row_width=1)
@@ -233,15 +218,12 @@ def sex_harass_main_inline():
     markup.add(btn_16_18, btn_18_plus, btn_14_16, btn_under_14)
     return markup
 
-
 def back_to_sh_main_inline():
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton("⬅️ Назад до вибору віку", callback_data="sh_main"))
     return markup
 
-
 # --- Основні обробники ---
-
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -252,7 +234,6 @@ def start(message):
         reply_markup=get_main_menu(),
     )
 
-
 @bot.message_handler(
     func=lambda message: bool(message.text)
     and ('Головне меню' in message.text or message.text == '/menu')
@@ -262,9 +243,7 @@ def back_to_main_menu(message):
         message.chat.id, 'Повертаємось до головного меню:', reply_markup=get_main_menu()
     )
 
-
 # --- РОЗДІЛ: ЗВІТИ ---
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text) and 'Звіти' in message.text
@@ -277,7 +256,6 @@ def handle_reports_section(message):
         parse_mode='Markdown'
     )
 
-
 @bot.message_handler(
     func=lambda message: bool(message.text) and 'Щоденний звіт' in message.text
 )
@@ -289,9 +267,7 @@ def handle_daily_reports_select(message):
         parse_mode='Markdown'
     )
 
-
 # --- ОБРОБНИК SOS ---
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text) and 'SOS' in message.text
@@ -338,9 +314,135 @@ def handle_sos_alert(message):
 
     bot.reply_to(message, status_msg, parse_mode='HTML')
 
+# --- РОЗДІЛ: АЛГОРИТМ ДІЙ ПРИ ДОМАШНЬОМУ НАСИЛЬСТВІ ---
+
+@bot.message_handler(func=lambda message: bool(message.text) and '🚨 Домашнє насильство' in message.text)
+def handle_domestic_violence_algorithm(message):
+    text = (
+        "<b>🚨 АЛГОРИТМ ДІЙ ІНСПЕКТОРА СОБ У РАЗІ ВИЯВЛЕННЯ ДОМАШНЬОГО НАСИЛЬСТВА</b>\n\n"
+        "Оберіть де саме відбувається / було виявлено правопорушення:"
+    )
+    bot.send_message(message.chat.id, text, parse_mode="HTML", reply_markup=dv_main_inline())
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith("dv_"))
+def handle_dv_callbacks(call):
+    bot.answer_callback_query(call.id)
+
+    if call.data == "dv_main":
+        text = (
+            "<b>🚨 АЛГОРИТМ ДІЙ ІНСПЕКТОРА СОБ У РАЗІ ВИЯВЛЕННЯ ДОМАШНЬОГО НАСИЛЬСТВА</b>\n\n"
+            "Оберіть де саме відбувається / було виявлено правопорушення:"
+        )
+        bot.edit_message_text(
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            text=text,
+            parse_mode="HTML",
+            reply_markup=dv_main_inline()
+        )
+
+    elif call.data == "dv_zzso":
+        text = (
+            "<b>🏫 Алгоритм дій інспектора СОБ у разі виявлення домашнього насильства в ЗЗСО</b>\n\n"
+            "1. <b>ОБОВ'ЯЗКОВО ВМИКАЄМО БОДІ-КАМЕРУ</b>\n"
+            "<b>Отримання інформації:</b>\n"
+            "• Анонімно\n"
+            "• Від учнів\n"
+            "• Від батьків\n"
+            "• Від вчителів\n"
+            "• Від адміністрації школи\n"
+            "• Особисто побачили\n"
+            "• Через АІКОМ\n\n"
+            "2. <b>Встановити учасників:</b>\n"
+            "• Постраждала особа\n"
+            "• Кривдник\n"
+            "• Свідки (за наявності)\n\n"
+            "3. <b>Форми домашнього насильства:</b>\n"
+            "• Фізичне\n"
+            "• Психологічне\n"
+            "• Економічне\n"
+            "• Сексуальне\n\n"
+            "4. <b>Кваліфікуючі ознаки:</b>\n"
+            "• Потерпіла особа належить до визначеного кола осіб (члени сім'ї)\n"
+            "• Наслідки (фізичні або психологічні страждання, розлади здоров'я, втрата працездатності, погіршення якості життя потерпілої особи)\n\n"
+            "5. <b>Повідомлення адміністрації школи та психолога</b>\n"
+            "<b>Дії керівника ЗЗСО:</b>\n"
+            "• Повідомити службу у справах дітей та соціальну службу\n"
+            "• Забезпечити психологічну та соціально-педагогічну підтримку\n"
+            "• Зберегти конфіденційність інформації\n\n"
+            "6. <b>Повідомлення керівництва відділу СОБ</b>\n\n"
+            "7. <b>Припинити правопорушення</b>\n\n"
+            "8. <b>Запитати чи потрібна домедична/медична допомога:</b>\n"
+            "• У разі необхідності надаємо домедичну допомогу чи викликаємо БШМД\n\n"
+            "9. <b>Окремо спілкуємось з постраждалою особою та кривдником</b>\n\n"
+            "10. <b>Проводимо опитування</b> (дитину опитуємо в присутності психолога)\n\n"
+            "11. <b>Якщо підтверджується, подальші дії:</b>\n"
+            "• Збирання доказів або будь-яких фактичних даних, які свідчать про вчинення правопорушення\n"
+            "• Робимо реєстрацію на лінію 102\n"
+            "• Складаємо матеріали згідно ст. 173-2 КУпАП\n"
+            "• Пишемо електронний та письмовий рапорт\n\n"
+            "<b>📎 ДО ПРОТОКОЛУ ДОДАЄТЬСЯ:</b>\n"
+            "• Рапорт\n"
+            "• Пояснення учасників події\n"
+            "• ТЗП (якщо складався)\n"
+            "• Відео з бодікамери\n"
+            "• Копія паспорта\n"
+            "• Інші фактичні дані"
+        )
+        bot.edit_message_text(
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            text=text,
+            parse_mode="HTML",
+            reply_markup=back_to_dv_main_inline()
+        )
+
+    elif call.data == "dv_home":
+        text = (
+            "<b>🏠 Алгоритм дій інспектора СОБ у разі виявлення домашнього насильства, якщо це відбувається вдома</b>\n\n"
+            "1. <b>Отримання інформації:</b>\n"
+            "• Анонімно\n"
+            "• Від учнів\n"
+            "• Від батьків\n"
+            "• Від вчителів\n"
+            "• Від адміністрації школи\n"
+            "• Особисто побачили\n"
+            "• Через АІКОМ\n\n"
+            "2. <b>Встановити учасників:</b>\n"
+            "• Постраждала особа\n"
+            "• Кривдник\n"
+            "• Свідки (за наявності)\n\n"
+            "3. <b>Форми домашнього насильства:</b>\n"
+            "• Фізичне\n"
+            "• Психологічне\n"
+            "• Економічне\n"
+            "• Сексуальне\n\n"
+            "4. <b>Кваліфікуючі ознаки:</b>\n"
+            "• Потерпіла особа належить до визначеного кола осіб (члени сім'ї)\n"
+            "• Наслідки (фізичні або психологічні страждання, розлади здоров'я, втрата працездатності, погіршення якості життя потерпілої особи)\n\n"
+            "5. <b>Повідомлення адміністрації школи та психолога</b>\n"
+            "<b>Дії керівника ЗЗСО:</b>\n"
+            "• Повідомити службу у справах дітей та соціальну службу\n"
+            "• Забезпечити психологічну та соціально-педагогічну підтримку\n"
+            "• Зберегти конфіденційність інформації\n\n"
+            "6. <b>Повідомлення керівництва відділу СОБ</b>\n\n"
+            "7. <b>Забезпечення безпеки постраждалої особи</b>\n\n"
+            "8. <b>В присутності психолога опитати дитину</b>\n\n"
+            "9. <b>Реєстрація на лінію 102</b> (за необхідності викликаємо БШМД) та повідомляємо СЮП, які повинні прибути на місце події\n\n"
+            "10. <b>Документування:</b>\n"
+            "• Відбираємо пояснення від вчителів, психолога, соціального педагога\n"
+            "• Записуємо дані екіпажу патрульної поліції, працівника ювенальної превенції та БШМД, які працювали на місці події\n\n"
+            "11. <b>Пишемо письмовий та електронний рапорт.</b>"
+        )
+        bot.edit_message_text(
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            text=text,
+            parse_mode="HTML",
+            reply_markup=back_to_dv_main_inline()
+        )
 
 # --- РОЗДІЛ: СЕКСУАЛЬНЕ ДОМАГАННЯ ---
-
 
 @bot.message_handler(func=lambda message: bool(message.text) and 'Сексуальне домагання' in message.text)
 def handle_sex_harassment_section(message):
@@ -349,9 +451,9 @@ def handle_sex_harassment_section(message):
         "📹 <b>УВІМКНУТИ БОДІКАМ</b>\n\n"
         "<b>Загальні кроки реагування:</b>\n"
         "1. Отримання інформації від учнів, вчителів тощо.\n"
-        "2. Повідомити безпосереднє керівництво, адміністрацію ЗЗСО та батьків участников події.\n"
+        "2. Повідомити безпосереднє керівництво, адміністрацію ЗЗСО та батьків учасників події.\n"
         "3. Спільно з адміністрацією ЗЗСО провести опитування учасників події.\n"
-        "4. Кваліфікувати правопорушення (встановити наявність відомостей кримінального чи адміністративного характера).\n"
+        "4. Кваліфікувати правопорушення (встановити наявність відомостей кримінального чи адміністративного характеру).\n"
         "5. За наявності відомостей кримінального характеру повідомити чергового ВП та здійснити реєстрацію за лінією 102.\n"
         "6. У разі відсутності відомостей кримінального характеру:\n"
         "   <i>У всіх випадках намагатись знайти якомога більше доказів (свідків, відео з відеокамер).</i>\n\n"
@@ -363,7 +465,6 @@ def handle_sex_harassment_section(message):
         parse_mode="HTML",
         reply_markup=sex_harass_main_inline()
     )
-
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith("sh_"))
 def handle_sex_harassment_callbacks(call):
@@ -488,9 +589,7 @@ def handle_sex_harassment_callbacks(call):
             reply_markup=back_to_sh_main_inline()
         )
 
-
 # --- РОЗДІЛ: БУЛІНГ ---
-
 
 @bot.message_handler(func=lambda message: bool(message.text) and 'Булінг' in message.text)
 def handle_bullying_section(message):
@@ -500,7 +599,6 @@ def handle_bullying_section(message):
         parse_mode="HTML",
         reply_markup=bullying_main_inline()
     )
-
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith("bull_"))
 def handle_bullying_callbacks(call):
@@ -581,10 +679,10 @@ def handle_bullying_callbacks(call):
     elif call.data == "bull_under_16":
         text = (
             "<b>👶 ПОДАЛЬШІ ДІЇ — ДО 16 РОКІВ</b>\n\n"
-            "1. Збирання доказів або будь-яких фактичних даних, які свідчать про вчинення правопорушення (пояснення від всех учасників, фото/відео докази).\n"
+            "1. Збирання доказів або будь-яких фактичних даних, які свідчать про вчинення правопорушення (пояснення від всіх учасників, фото/відео докази).\n"
             "2. Складаємо протокол за <b>ч. 3-4 ст. 173-4 КУпАП на батьків</b> (або інших законних представників: переконатись в правильності документів).\n\n"
             "<b>📝 ФАБУЛА:</b>\n"
-            "<i>«15.05.2025 о 10год.00хв. знаходячись за адресою вул.Світла,2, гр.(ПІБ), не здійснив належного контролю за поведінкою свого сина (ПІБ), 25.05.2016 р.н., який в приміщенні КЗ Харківський ліцей №153 Харківської міської ради вчинив булінг физичного та психологічного характеру відносно свого однокласника Фролова І.І., 23.03.2015 р.н., а саме штовхав його та виражався нецензурною лайкою в його бік, подія відбувається систематично. Чим було завдано шкоди психологічному та фізичному здоров'ю потерпілого.»</i>\n\n"
+            "<i>«15.05.2025 о 10год.00хв. знаходячись за адресою вул.Світла,2, гр.(ПІБ), не здійснив належного контролю за поведінкою свого сина (ПІБ), 25.05.2016 р.н., який в приміщенні КЗ Харківський ліцей №153 Харківської міської ради вчинив булінг фізичного та психологічного характеру відносно свого однокласника Фролова І.І., 23.03.2015 р.н., а саме штовхав його та виражався нецензурною лайкою в його бік, подія відбувається систематично. Чим було завдано шкоди психологічному та фізичному здоров'ю потерпілого.»</i>\n\n"
             "<b>📎 ДО ПРОТОКОЛУ ДОДАЄТЬСЯ:</b>\n"
             "1. РАПОРТ\n"
             "2. ПРОТОКОЛ ЗАСІДАННЯ (копія)\n"
@@ -616,7 +714,7 @@ def handle_bullying_callbacks(call):
             "3. ПОЯСНЕННЯ УЧАСНИКІВ ПОДІЇ\n"
             "4. ВІДЕО З Б/К\n"
             "5. КОПІЯ ПАСПОРТА (ПРАВОПОРУШНИКА)\n"
-            "7. Інші фактичні дані, які могут свідчити про вчинення правопорушення (відео, фото, інше...)\n\n"
+            "7. Інші фактичні дані, які можуть свідчити про вчинення правопорушення (відео, фото, інше...)\n\n"
             "⚠️ <b>НЕ ЗАБУВАЄМО ЕЛЕКТРОННИЙ РАПОРТ В ЧАТ</b>"
         )
         bot.edit_message_text(
@@ -630,7 +728,7 @@ def handle_bullying_callbacks(call):
     elif call.data == "bull_over_18":
         text = (
             "<b>👨 ПОДАЛЬШІ ДІЇ — ВІД 18 РОКІВ</b>\n\n"
-            "1. Збирання доказів або будь-яких фактичних даних, які свідчать про вчинення правопорушення (пояснення від всех учасників, фото/відео докази).\n"
+            "1. Збирання доказів або будь-яких фактичних даних, які свідчать про вчинення правопорушення (пояснення від всіх учасників, фото/відео докази).\n"
             "2. Складання протоколу за <b>ч. 1 ст. 173-4 КУпАП на особу правопорушника</b>.\n\n"
             "<b>📝 ФАБУЛА:</b>\n"
             "<i>«25.05.2025 о 10год. 00хв. за адресою вул. Світла,2, гр. (ПІБ), вчинив булінг психологічного та фізичного характеру відносно учня (ПІБ), а саме штовхав та виражався нецензурною лайкою, подія відбувається систематично. Чим було завдано шкоди психологічного та фізичного характеру потерпілого.»</i>\n\n"
@@ -640,7 +738,7 @@ def handle_bullying_callbacks(call):
             "3. ПОЯСНЕННЯ УЧАСНИКІВ ПОДІЇ\n"
             "4. ВІДЕО З Б/К\n"
             "5. КОПІЯ ПАСПОРТА (ПРАВОПОРУШНИКА)\n"
-            "7. Інші фактичні дані, які могут свідчити про вчинення правопорушення (відео, фото, інше...)\n\n"
+            "7. Інші фактичні дані, які можуть свідчити про вчинення правопорушення (відео, фото, інше...)\n\n"
             "⚠️ <b>НЕ ЗАБУВАЄМО ЕЛЕКТРОННИЙ РАПОРТ В ЧАТ</b>"
         )
         bot.edit_message_text(
@@ -651,9 +749,7 @@ def handle_bullying_callbacks(call):
             reply_markup=back_to_bull_actions_inline()
         )
 
-
 # --- КУпАП: ст. 127 ---
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text)
@@ -681,9 +777,7 @@ def art127_info(message):
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
-
 # --- КУпАП: ст. 122 ---
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text)
@@ -705,7 +799,6 @@ def art122_category_select(message):
         reply_markup=get_art122_menu(),
         parse_mode='Markdown',
     )
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text)
@@ -732,7 +825,6 @@ def art122_signs_info(message):
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
-
 @bot.message_handler(
     func=lambda message: bool(message.text)
     and 'Порушення правил зупинки' in message.text
@@ -755,7 +847,6 @@ def art122_stopping_info(message):
         ' біля краю проїзною частини (на узбіччі)), чим порушив п.15.4 ПДР.'
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text)
@@ -781,7 +872,6 @@ def art122_parking_info(message):
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
-
 @bot.message_handler(
     func=lambda message: bool(message.text)
     and 'Зупинка/стоянка для осіб з інвалідністю' in message.text
@@ -806,9 +896,7 @@ def art122_disability_info(message):
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
-
 # --- КУпАП: ст. 178 ---
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text)
@@ -823,7 +911,6 @@ def art178_category_select(message):
         reply_markup=get_art178_menu(),
         parse_mode='Markdown',
     )
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text)
@@ -852,7 +939,6 @@ def art178_part1_info(message):
         ' напій – горілка «Державна», слабоалкогольний напій – «Бірмікс»).'
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text)
@@ -885,7 +971,6 @@ def art178_part2_info(message):
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
-
 @bot.message_handler(
     func=lambda message: bool(message.text)
     and 'ч. 3' in message.text
@@ -917,9 +1002,7 @@ def art178_part3_info(message):
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
-
 # --- КУпАП: ст. 175-1 ---
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text)
@@ -934,7 +1017,6 @@ def smoking_category_select(message):
         ' бази:',
         reply_markup=get_smoking_menu(),
     )
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text)
@@ -960,14 +1042,14 @@ def smoking_part1_info(message):
         '3) у приміщеннях та на території навчальних закладів;\n'
         '4) на дитячих майданчиках;\n'
         '5) у приміщеннях та на території спортивних і фізкультурно-оздоровчих'
-        ' споруд та закладів физичної культури і спорту;\n'
+        ' споруд та закладів фізичної культури і спорту;\n'
         '6) у під’їздах житлових будинків;\n'
         '7) у підземних переходах;\n'
         '8) у транспорті загального користування, що використовується для'
         ' перевезення пасажирів;\n'
         '9) у приміщеннях закладів ресторанного господарства;\n'
         '10) у приміщеннях об’єктів культурного призначення;\n'
-        '11) у приміщеннях органов державної влади та органов місцевого'
+        '11) у приміщеннях органів державної влади та органів місцевого'
         ' самоврядування, інших державних установ;\n'
         '12) на стаціонарно обладнаних зупинках маршрутних транспортних засобів.\n\n'
         '⛔️ **За забороняється, крім спеціально відведених для цього місць,'
@@ -979,7 +1061,6 @@ def smoking_part1_info(message):
         '4) в аеропортах та на вокзалах.'
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text)
@@ -1000,9 +1081,7 @@ def smoking_part2_info(message):
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
-
 # --- Алгоритми ---
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text) and 'Алгоритми' in message.text
@@ -1013,7 +1092,6 @@ def algorithms_category_select(message):
         'Оберіть потрібний алгоритм дій:',
         reply_markup=get_algorithms_menu(),
     )
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text) and 'виявленні ВНП' in message.text
@@ -1051,9 +1129,7 @@ def explosives_algorithm_info(message):
     
     bot.send_message(message.chat.id, text, parse_mode='HTML', reply_markup=markup)
 
-
 # --- Callback обробник для прикладу рапорту ВНП ---
-
 
 @bot.callback_query_handler(func=lambda call: call.data == "vnp_report_example")
 def handle_vnp_report_example(call):
@@ -1077,9 +1153,7 @@ def handle_vnp_report_example(call):
     )
     bot.send_message(call.message.chat.id, text, parse_mode="HTML")
 
-
 # --- АЛГОРИТМ: ДІЇ У РАЗІ ВИЯВЛЕННЯ НАРКОТИЧНИХ РЕЧОВИН ---
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text) and 'наркотичних речовин' in message.text.lower()
@@ -1097,7 +1171,6 @@ def drugs_algorithm_info(message):
     markup.add(btn_voluntary, btn_refusal)
     
     bot.send_message(message.chat.id, text, parse_mode="HTML", reply_markup=markup)
-
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith("drugs_"))
 def handle_drugs_callbacks(call):
@@ -1132,7 +1205,6 @@ def handle_drugs_callbacks(call):
         )
         bot.send_message(call.message.chat.id, text, parse_mode="HTML")
 
-
 @bot.message_handler(
     func=lambda message: bool(message.text)
     and 'від 16 до 18 років' in message.text
@@ -1166,7 +1238,6 @@ def over16_algorithm_info(message):
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
-
 @bot.message_handler(
     func=lambda message: bool(message.text)
     and 'від 14 до 16 років' in message.text
@@ -1196,10 +1267,9 @@ def over14_algorithm_info(message):
         '3. ПОЯСНЕННЯ УЧАСНИКІВ ПОДІЇ\n'
         '4. ВІДЕО З Б/К\n'
         '5. КОПІЯ ПАСПОРТА (ПРАВОПОРУШНИКА)\n'
-        '7. Інші фактичні дані, які могут свідчити про вчинення правопорушення (відео, фото, інше...)'
+        '7. Інші фактичні дані, які можуть свідчити про вчинення правопорушення (відео, фото, інше...)'
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text) and 'до 14 років' in message.text
@@ -1239,9 +1309,7 @@ def under14_algorithm_info(message):
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
-
 # --- Нормативно-правова база ---
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text)
@@ -1257,7 +1325,6 @@ def docs_category_select(message):
         'Оберіть потрібну постанову, наказ, закон або кодекс:',
         reply_markup=get_docs_menu(),
     )
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text) and 'купап' in message.text.lower()
@@ -1276,7 +1343,6 @@ def doc_kupap_info(message):
         parse_mode='Markdown',
         reply_markup=markup,
     )
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text)
@@ -1297,7 +1363,6 @@ def doc_kk_info(message):
         reply_markup=markup,
     )
 
-
 @bot.message_handler(
     func=lambda message: bool(message.text)
     and 'сімейний кодекс' in message.text.lower()
@@ -1316,7 +1381,6 @@ def doc_family_code_info(message):
         parse_mode='Markdown',
         reply_markup=markup,
     )
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text)
@@ -1337,7 +1401,6 @@ def doc_police_law_info(message):
         reply_markup=markup,
     )
 
-
 @bot.message_handler(
     func=lambda message: bool(message.text) and message.text == '🎓 ЗУ Про освіту'
 )
@@ -1355,7 +1418,6 @@ def doc_education_law_info(message):
         parse_mode='Markdown',
         reply_markup=markup,
     )
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text)
@@ -1376,7 +1438,6 @@ def doc_sec_education_law_info(message):
         reply_markup=markup,
     )
 
-
 @bot.message_handler(
     func=lambda message: bool(message.text)
     and 'охорону дитинства' in message.text.lower()
@@ -1396,7 +1457,6 @@ def doc_child_protection_info(message):
         reply_markup=markup,
     )
 
-
 @bot.message_handler(
     func=lambda message: bool(message.text) and '684' in message.text
 )
@@ -1414,7 +1474,6 @@ def doc_684_info(message):
         parse_mode='Markdown',
         reply_markup=markup,
     )
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text) and '663' in message.text
@@ -1434,7 +1493,6 @@ def doc_663_info(message):
         reply_markup=markup,
     )
 
-
 @bot.message_handler(
     func=lambda message: bool(message.text) and '1646' in message.text
 )
@@ -1452,7 +1510,6 @@ def doc_1646_info(message):
         parse_mode='Markdown',
         reply_markup=markup,
     )
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text) and '1245' in message.text
@@ -1472,7 +1529,6 @@ def doc_1245_info(message):
         reply_markup=markup,
     )
 
-
 @bot.message_handler(
     func=lambda message: bool(message.text) and message.text == '🏛 Постанова № 70'
 )
@@ -1490,7 +1546,6 @@ def doc_70_info(message):
         parse_mode='Markdown',
         reply_markup=markup,
     )
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text)
@@ -1511,7 +1566,6 @@ def doc_685_1013_info(message):
         reply_markup=markup,
     )
 
-
 @bot.message_handler(
     func=lambda message: bool(message.text) and '1395' in message.text
 )
@@ -1529,7 +1583,6 @@ def doc_1395_info(message):
         parse_mode='Markdown',
         reply_markup=markup,
     )
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text) and '1376' in message.text
@@ -1549,7 +1602,6 @@ def doc_1376_info(message):
         reply_markup=markup,
     )
 
-
 @bot.message_handler(
     func=lambda message: bool(message.text) and message.text == '📋 Наказ № 70'
 )
@@ -1568,9 +1620,7 @@ def doc_70_order_info(message):
         reply_markup=markup,
     )
 
-
-# --- КУпАП: ст. 173-2 (Домашнє насильство) ---
-
+# --- КУпАП: ст. 173-2 (Домашнє насильство - фабули) ---
 
 @bot.message_handler(
     func=lambda message: bool(message.text)
@@ -1583,7 +1633,6 @@ def violence_category_select(message):
         reply_markup=get_violence_menu(),
     )
 
-
 @bot.message_handler(
     func=lambda message: bool(message.text)
     and ('дитини' in message.text.lower() or 'дитин' in message.text.lower())
@@ -1591,7 +1640,7 @@ def violence_category_select(message):
 )
 def child_violence_info(message):
     fabula_text_1 = (
-        '⚖️ **ПРИКЛАД ФАБУЛЫ ЗА Ч. 2 СТ. 173-2 КУпАП**\n'
+        '⚖️ **ПРИКЛАД ФАБУЛИ ЗА Ч. 2 СТ. 173-2 КУпАП**\n'
         '*(постраждала особа — присутня дитина)*\n\n'
         '«01.01.2026 близько 20:00 в приміщенні ПРУ КЗ «Харківський ліцей #153»'
         ' який знаходився за адресою: м. Харків, просп. Аерокосмічний, буд.1, кв.'
@@ -1619,9 +1668,7 @@ def child_violence_info(message):
     bot.send_message(message.chat.id, fabula_text_1, parse_mode='Markdown')
     bot.send_message(message.chat.id, fabula_text_2, parse_mode='Markdown')
 
-
 # --- ОНОВЛЕНИЙ РОЗДІЛ: ст. 184 КУпАП ---
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text) and '184' in message.text
@@ -1633,14 +1680,13 @@ def art_184_info(message):
         ' осіб, які їх замінюють, від виконання передбачених законодавством'
         ' обов’язків щодо забезпечення необхідних умов життя, навчання та'
         ' виховання неповнолітніх дітей.\n\n⚖️ **Приклад фабули за ч. 1 ст. 184'
-        ' КУпАП:**\n26.10.2025 о 10 год. 00хв. за адресою місто Харків вул. Грубника, 24, в приміщенні КЗ "Харківський ліцей №153"  (ПІБ) 07.01.1979 р.н., ухилився від належного виконання батьківських обовязкв передбачених ч.1 ст.150 "Сімейного Кодексу України " , внаслідок чого її малолітній син (ПІБ) 14.10.2015 р.н., палив тютюнові вироби а саме електронну сигарету не встановленого типу.\n\n───────────────────\n\n📌 **Ч. 3:** Вчинення'
+        ' КУпАП:**\n26.10.2025 о 10 год. 00хв. за адресою місто Харків вул. Грубника, 24, в приміщенні КЗ "Харківський ліцей №153"  (ПІБ) 07.01.1979 р.н., ухилився від належного виконання батьківських обов\'язків передбачених ч.1 ст.150 "Сімейного Кодексу України " , внаслідок чого її малолітній син (ПІБ) 14.10.2015 р.н., палив тютюнові вироби а саме електронну сигарету не встановленого типу.\n\n───────────────────\n\n📌 **Ч. 3:** Вчинення'
         ' неповнолітніми віком від 14 до 16 років правопорушення, відповідальність'
         ' за яке передбачено цим Кодексом (крім ч. 3 або ч. 4 ст.'
         ' 173-4).\n\n⚖️ **Приклад фабули за ч. 3 ст. 184 КУпАП:**\nГромадянка'
         " (ПІБ) будучи матір'ю неповнолітнього (ПІБ) 2011 року народження, який не досяг 16-річного віку, 15.06.2026 вчинив домашнє насильство відносно своєї сестри, а саме умисні дії психологічного характеру: ображав словесно, погрожував вбити, чим завдав їй психологічних страждань, унаслідок чого завдано шкоди психічному здоров’ю (ПІБ) відповідальність за яке передбачена ст. 173-2 КУпАП, чим вчинила правопорушення, передбачене ч. 3 ст. 184 КУпАП."
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text)
@@ -1661,13 +1707,12 @@ def art_173_info(message):
         ' буд. № 76/1 по просп. Миру в Хмельницькому, висловлювався нецензурною'
         ' лайкою на адресу гр. (ПІБ) (або перехожих), чим порушував'
         ' громадський порядок і спокій громадян.\n\n📌 **Варіант 2 (Справляння'
-        ' природних потреба):**\n10.09.2015 о 20 год. 05 хв. гр. (ПІБ)'
+        ' природних потреб):**\n10.09.2015 о 20 год. 05 хв. гр. (ПІБ)'
         ' в м. Хмельницькому по вул. Проскурівського підпілля, 15,'
-        ' справляв природні потреби поблизу дверей офісу «Сонечко», чим своими'
+        ' справляв природні потреби поблизу дверей офісу «Сонечко», чим своїми'
         ' діями порушував громадський порядок.'
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
-
 
 @bot.message_handler(
     func=lambda message: bool(message.text) and 'Про бота' in message.text
@@ -1680,7 +1725,6 @@ def about_bot_info(message):
         ' Безпеки.\n\n👨‍💻 **З питань роботи бота звертайтеся до куратора.**'
     )
     bot.send_message(message.chat.id, about_text, parse_mode='Markdown')
-
 
 # --- Запуск ---
 
