@@ -671,7 +671,7 @@ def handle_bullying_callbacks(call):
         bot.edit_message_text(
             chat_id=call.message.chat.id,
             message_id=call.message.message_id,
-            text="<b>📝 Подальші дії після засідання комісії</b>\n\nОберіть вікову категорію правопорушника:",
+            text="<b>📝 Подальші дії, ОБОВ'ЯЗКОВЕ СКЛАДАННЯ ПРОТОКОЛУ!! </b>\n\nОберіть вікову категорію правопорушника:",
             parse_mode="HTML",
             reply_markup=bullying_actions_inline()
         )
