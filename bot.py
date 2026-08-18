@@ -43,7 +43,9 @@ SOS_RECIPIENTS = [
     816795374,    # Монишева А.В.
     538974554,    # Гойденко А.С.
     183100331,    # Дульцева О.В.
-    1055381905    # Колісник Н.С.
+    1055381905,   # Колісник Н.С.
+    630005112,    # Грубник М.Г.
+    1135867920    # Потєхінська О.О.
 ]
 
 # 👤 Кастомні імена для конкретних ID при надсиланні SOS
@@ -60,7 +62,9 @@ CUSTOM_NAMES = {
     816795374: 'Монишева А.В.',
     538974554: 'Гойденко А.С.',
     183100331: 'Дульцева О.В.',
-    1055381905: 'Колісник Н.С.'
+    1055381905: 'Колісник Н.С.',
+    630005112: 'Грубник М.Г.',
+    1135867920: 'Потєхінська О.О.'
 }
 
 bot = telebot.TeleBot(TOKEN)
@@ -1451,15 +1455,14 @@ def doc_education_law_info(message):
     )
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
-    and 'середню освіту' in message.text.lower()
+    func=lambda message: bool(message.text) and 'загальну середню освіту' in message.text.lower()
 )
 def doc_sec_education_law_info(message):
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
-            '🔗 Відкрити ЗУ «Про загальну середню освіту»',
-            url='https://zakon.rada.gov.ua/laws/show/651-14#Text',
+            '🔗 Відкрити ЗУ «Про повну загальну середню освіту»',
+            url='https://zakon.rada.gov.ua/laws/show/463-20#Text',
         )
     )
     bot.send_message(
@@ -1470,10 +1473,9 @@ def doc_sec_education_law_info(message):
     )
 
 @bot.message_handler(
-    func=lambda message: bool(message.text)
-    and 'охорону дитинства' in message.text.lower()
+    func=lambda message: bool(message.text) and 'охорону дитинства' in message.text.lower()
 )
-def doc_child_protection_info(message):
+def doc_child_protection_law_info(message):
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1491,7 +1493,7 @@ def doc_child_protection_info(message):
 @bot.message_handler(
     func=lambda message: bool(message.text) and '684' in message.text
 )
-def doc_684_info(message):
+def doc_postanova_684_info(message):
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1509,35 +1511,35 @@ def doc_684_info(message):
 @bot.message_handler(
     func=lambda message: bool(message.text) and '1245' in message.text
 )
-def doc_1245_info(message):
+def doc_postanova_1245_info(message):
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
             '🔗 Відкрити Постанову № 1245',
-            url='https://zakon.rada.gov.ua/laws/show/1245-2023-%D0%BF#Text',
+            url='https://zakon.rada.gov.ua/laws/show/1245-2020-%D0%BF#Text',
         )
     )
     bot.send_message(
         message.chat.id,
-        '🏛 **Постанова КМУ № 1245**',
+        '🏛 **Постанова КМУ № 1245 «Про затвердження Порядку взаємодії суб’єктів, що здійснюють заходи у сфері запобігання та протидії домашньому насильству»**',
         parse_mode='Markdown',
         reply_markup=markup,
     )
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and 'Постанова № 70' in message.text
+    func=lambda message: bool(message.text) and '70' in message.text and 'Постанова' in message.text
 )
-def doc_post_70_info(message):
+def doc_postanova_70_info(message):
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
             '🔗 Відкрити Постанову № 70',
-            url='https://zakon.rada.gov.ua/laws/show/70-2020-%D0%BF#Text',
+            url='https://zakon.rada.gov.ua/laws/show/70-2024-%D0%BF#Text',
         )
     )
     bot.send_message(
         message.chat.id,
-        '🏛 **Постанова КМУ № 70**',
+        '🏛 **Постанова КМУ № 70 «Питання реалізації проєкту Служби освітньої безпеки»**',
         parse_mode='Markdown',
         reply_markup=markup,
     )
@@ -1545,17 +1547,17 @@ def doc_post_70_info(message):
 @bot.message_handler(
     func=lambda message: bool(message.text) and '663' in message.text
 )
-def doc_663_info(message):
+def doc_nakaz_663_info(message):
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
             '🔗 Відкрити Наказ № 663',
-            url='https://zakon.rada.gov.ua/laws/show/z0951-18#Text',
+            url='https://zakon.rada.gov.ua/laws/show/z0832-18#Text',
         )
     )
     bot.send_message(
         message.chat.id,
-        '📋 **Наказ МВС № 663**',
+        '📋 **Наказ МВС № 663 «Про затвердження Інструкції з організації реагування на заяви та повідомлення про кримінальні, адміністративні правопорушення»**',
         parse_mode='Markdown',
         reply_markup=markup,
     )
@@ -1563,7 +1565,7 @@ def doc_663_info(message):
 @bot.message_handler(
     func=lambda message: bool(message.text) and '1646' in message.text
 )
-def doc_1646_info(message):
+def doc_nakaz_1646_info(message):
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
@@ -1581,17 +1583,17 @@ def doc_1646_info(message):
 @bot.message_handler(
     func=lambda message: bool(message.text) and '685/1013' in message.text
 )
-def doc_685_1013_info(message):
+def doc_nakaz_685_info(message):
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
             '🔗 Відкрити Спільний Наказ',
-            url='https://zakon.rada.gov.ua/laws/show/z1130-14#Text',
+            url='https://zakon.rada.gov.ua/laws/show/z1026-14#Text',
         )
     )
     bot.send_message(
         message.chat.id,
-        '📋 **Спільний наказ МОН/МВС № 685/1013**',
+        '📋 **Спільний наказ МОН/МВС № 685/1013 «Про затвердження Порядку взаємодії органів Національної поліції та закладів освіти»**',
         parse_mode='Markdown',
         reply_markup=markup,
     )
@@ -1599,12 +1601,12 @@ def doc_685_1013_info(message):
 @bot.message_handler(
     func=lambda message: bool(message.text) and '1395' in message.text
 )
-def doc_1395_info(message):
+def doc_nakaz_1395_info(message):
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
             '🔗 Відкрити Наказ № 1395',
-            url='https://zakon.rada.gov.ua/laws/show/z1459-15#Text',
+            url='https://zakon.rada.gov.ua/laws/show/z0011-16#Text',
         )
     )
     bot.send_message(
@@ -1617,35 +1619,35 @@ def doc_1395_info(message):
 @bot.message_handler(
     func=lambda message: bool(message.text) and '1376' in message.text
 )
-def doc_1376_info(message):
+def doc_nakaz_1376_info(message):
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
             '🔗 Відкрити Наказ № 1376',
-            url='https://zakon.rada.gov.ua/laws/show/z0081-19#Text',
+            url='https://zakon.rada.gov.ua/laws/show/z1492-18#Text',
         )
     )
     bot.send_message(
         message.chat.id,
-        '📋 **Наказ МВС № 1376**',
+        '📋 **Наказ МВС № 1376 «Про затвердження Інструкції з організації діяльності підрозділів ювенальної превенції Національної поліції України»**',
         parse_mode='Markdown',
         reply_markup=markup,
     )
 
 @bot.message_handler(
-    func=lambda message: bool(message.text) and 'Наказ № 70' in message.text
+    func=lambda message: bool(message.text) and '70' in message.text and 'Наказ' in message.text
 )
 def doc_nakaz_70_info(message):
     markup = types.InlineKeyboardMarkup()
     markup.add(
         types.InlineKeyboardButton(
             '🔗 Відкрити Наказ № 70',
-            url='https://zakon.rada.gov.ua/laws/show/z0228-21#Text',
+            url='https://zakon.rada.gov.ua/laws/show/z0250-20#Text',
         )
     )
     bot.send_message(
         message.chat.id,
-        '📋 **Наказ № 70**',
+        '📋 **Наказ Нацполіції № 70 «Про затвердження Інструкції з організації діяльності поліцейського офіцера громади / інспектора СОБ»**',
         parse_mode='Markdown',
         reply_markup=markup,
     )
@@ -1657,23 +1659,25 @@ def doc_nakaz_70_info(message):
 )
 def about_bot_info(message):
     text = (
-        'ℹ️ **Служба освітньої безпеки (СОБ) — Помічник**\n\n'
-        'Бот розроблений для швидкого доступу до алгоритмів дій, нормативно-правової бази, '
-        'зразків фабул адміністративних правопорушень та екстреного сповіщення про надзвичайні події (SOS).\n\n'
-        'Запитання та пропозиції надсилайте адміністратору.'
+        '🤖 **Служба освітньої безпеки (СОБ) — Інформаційний помічник**\n\n'
+        'Цей бот розроблений для швидкого доступу до фабул КУпАП, нормативно-правової бази, '
+        'алгоритмів дій інспектора СОБ під час виникнення надзвичайних подій, а також '
+        'для оперативного надсилання термінових сигналів тривоги (SOS).\n\n'
+        '📌 **Основні функції:**\n'
+        '• Перегляд фабул та алгоритмів реагування на правопорушення;\n'
+        '• Швидкі посилання на діюче законодавство України;\n'
+        '• Зручні переходи до щоденних форм звітності;\n'
+        '• Кнопка тривожного сповіщення SOS у разі виникнення загрози.'
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
-# --- Запуск бота та веб-сервера ---
+# --- ЗАПУСК БОТА ТА ВЕБ-СЕРВЕРА ---
 
 if __name__ == '__main__':
+    # Запуск Flask укремому потоці для задоволення вимог Keep-Alive хостингів
     flask_thread = threading.Thread(target=run_flask)
     flask_thread.daemon = True
     flask_thread.start()
 
-    while True:
-        try:
-            bot.polling(none_stop=True, interval=1, timeout=60)
-        except Exception as e:
-            print(f'❌ Помилка polling: {e}')
-            time.sleep(5)
+    print("🤖 Бот успішно запущений та очікує на повідомлення...")
+    bot.infinity_polling(skip_pending=True)
