@@ -41,7 +41,12 @@ SOS_RECIPIENTS = [
     388133629,   # Піднебенна Ю.Ю.
     600698645,   # Адамович Т.О.
     816795374,   # Монишева А.В.
-    538974554    # Гойденко А.С.
+    538974554,   # Гойденко А.С.
+    804293019,   # Гавришева Ю.С.
+    1135867920,  # Потєхінська О.О.
+    630005112,   # Грубник М.Г.
+    1055381905,  # Колісник Н.С.
+    183100331    # Дульцева О.В.
 ]
 
 # 👤 Кастомні імена для конкретних ID при надсиланні SOS
@@ -56,7 +61,12 @@ CUSTOM_NAMES = {
     388133629: 'Піднебенна Ю.Ю.',
     600698645: 'Адамович Т.О.',
     816795374: 'Монишева А.В.',
-    538974554: 'Гойденко А.С.'
+    538974554: 'Гойденко А.С.',
+    804293019: 'Гавришева Ю.С.',
+    1135867920: 'Потєхінська О.О.',
+    630005112: 'Грубник М.Г.',
+    1055381905: 'Колісник Н.С.',
+    183100331: 'Дульцева О.В.'
 }
 
 bot = telebot.TeleBot(TOKEN)
@@ -896,6 +906,20 @@ def art122_disability_info(message):
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
+# --- КУпАП: ст. 173 (Дрібне хуліганство) ---
+
+@bot.message_handler(
+    func=lambda message: bool(message.text) and 'ст. 173 Дрібне хуліганство' in message.text
+)
+def art173_info(message):
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("ЗЗСО №173 (Форма звіту)", url=URL_ZZSO_173))
+    text = (
+        '🤪 **ст. 173 КУпАП — Дрібне хуліганство**\n\n'
+        'Оберіть посилання для подачі звіту або ознайомтесь із матеріалами нижче:'
+    )
+    bot.send_message(message.chat.id, text, parse_mode='Markdown', reply_markup=markup)
+
 # --- КУпАП: ст. 178 ---
 
 @bot.message_handler(
@@ -1537,7 +1561,7 @@ def doc_70_info(message):
     markup.add(
         types.InlineKeyboardButton(
             '🔗 Відкрити Постанову № 70',
-            url='https://zakon.rada.gov.ua/laws/show/70-2026-%D0%BF#Text',
+            url='https://zakon.rada.gov.ua/laws/show/70-2026-п#Text',
         )
     )
     bot.send_message(
@@ -1547,148 +1571,16 @@ def doc_70_info(message):
         reply_markup=markup,
     )
 
-@bot.message_handler(
-    func=lambda message: bool(message.text)
-    and ('685' in message.text or '1013' in message.text)
-)
-def doc_685_1013_info(message):
-    markup = types.InlineKeyboardMarkup()
-    markup.add(
-        types.InlineKeyboardButton(
-            '🔗 Відкрити Наказ № 685/1013',
-            url='https://zakon.rada.gov.ua/laws/show/z1583-23#Text',
-        )
-    )
-    bot.send_message(
-        message.chat.id,
-        '📋 **Спільний наказ № 685/1013**',
-        parse_mode='Markdown',
-        reply_markup=markup,
-    )
+# Запуск Flask у фоновому потоці для Keep-Alive
+flask_thread = threading.Thread(target=run_flask)
+flask_thread.daemon = True
+flask_thread.start()
 
-@bot.message_handler(
-    func=lambda message: bool(message.text) and '1395' in message.text
-)
-def doc_1395_info(message):
-    markup = types.InlineKeyboardMarkup()
-    markup.add(
-        types.InlineKeyboardButton(
-            '🔗 Відкрити Наказ № 1395',
-            url='https://zakon.rada.gov.ua/laws/show/z1408-15#Text',
-        )
-    )
-    bot.send_message(
-        message.chat.id,
-        '📋 **Наказ МВС України № 1395**',
-        parse_mode='Markdown',
-        reply_markup=markup,
-    )
-
-@bot.message_handler(
-    func=lambda message: bool(message.text) and '1376' in message.text
-)
-def doc_1376_info(message):
-    markup = types.InlineKeyboardMarkup()
-    markup.add(
-        types.InlineKeyboardButton(
-            '🔗 Відкрити Наказ № 1376',
-            url='https://zakon.rada.gov.ua/laws/show/z1496-15#Text',
-        )
-    )
-    bot.send_message(
-        message.chat.id,
-        '📋 **Наказ МВС України № 1376**',
-        parse_mode='Markdown',
-        reply_markup=markup,
-    )
-
-@bot.message_handler(
-    func=lambda message: bool(message.text) and message.text == '📋 Наказ № 70'
-)
-def doc_70_order_info(message):
-    markup = types.InlineKeyboardMarkup()
-    markup.add(
-        types.InlineKeyboardButton(
-            '🔗 Відкрити Наказ № 70',
-            url='https://zakon.rada.gov.ua/laws/show/z0250-16#Text',
-        )
-    )
-    bot.send_message(
-        message.chat.id,
-        '📋 **Наказ МВС України № 70**',
-        parse_mode='Markdown',
-        reply_markup=markup,
-    )
-
-# --- КУпАП: ст. 173-2 (Домашнє насильство - фабули) ---
-
-@bot.message_handler(
-    func=lambda message: bool(message.text)
-    and ('173-2' in message.text or 'Домашнє насильство' in message.text)
-)
-def violence_category_select(message):
-    bot.send_message(
-        message.chat.id,
-        'Оберіть потрібний розділ:',
-        reply_markup=get_violence_menu(),
-    )
-
-@bot.message_handler(
-    func=lambda message: bool(message.text)
-    and ('дитини' in message.text.lower() or 'дитин' in message.text.lower())
-    and '122' not in message.text
-)
-def child_violence_info(message):
-    fabula_text_1 = (
-        '⚖️ **ПРИКЛАД ФАБУЛИ ЗА Ч. 2 СТ. 173-2 КУпАП**\n'
-        '*(постраждала особа — присутня дитина)*\n\n'
-        '«01.01.2026 близько 20:00 в приміщенні ПРУ КЗ «Харківський ліцей #153»'
-        ' який знаходився за адресою: м. Харків, просп. Аерокосмічний, буд.1, кв.'
-        ' 1, ПІБ (кривдник) вчинив домашнє насильство психологічного характеру у'
-        ' відношенні дружини, ПІБ (постраждала особа), у присутності дитини'
-        ' (сина, дочки, племінника…) ПІБ, дата народження, чим була завдана'
-        ' шкода ПСИХІЧНОМУ здоров’ю потерпілого».\n\n'
-        'ℹ️ *Якщо при вчиненні домашнього насильства (адміністративного'
-        ' характеру) відносно дорослої особи присутня дитина (від народження до 18'
-        ' років) складаються окремі протоколи: постраждала доросла особа та'
-        ' постраждала присутня дитина!*'
-    )
-
-    fabula_text_2 = (
-        '⚖️ **ПРИКЛАД ФАБУЛИ ЗА СТ. 173-2 КУпАП**\n'
-        '*(насильство відносно неповнолітньої/малолітньої дитини)*\n\n'
-        '«01.01.2026 близько 20:00 в приміщенні ПРУ КЗ «Харківський ліцей #153»'
-        ' який знаходиться за адресою: м. Харків, просп. Аерокосмічний, буд.1, ПІБ'
-        ' (кривдник) вчинив домашнє насильство психологічного характеру у'
-        ' відношенні малолітньої/неповнолітньої доньки/сина, ПІБ (постраждала'
-        ' особа), дата народження, а саме: ображав, принижував, залякував, чим'
-        ' була завдана шкода ПСИХІЧНОМУ здоров’ю потерпілої».'
-    )
-
-    bot.send_message(message.chat.id, fabula_text_1, parse_mode='Markdown')
-    bot.send_message(message.chat.id, fabula_text_2, parse_mode='Markdown')
-
-# --- РОЗДІЛ: ст. 184 КУпАП ---
-
-@bot.message_handler(
-    func=lambda message: bool(message.text) and '184' in message.text
-)
-def art_184_info(message):
-    text = (
-        '🚸 **ст. 184 КУпАП — Невиконання батьками або особами, що їх замінюють,'
-        " обов'язків щодо виховання дітей**\n\n📌 **Ч. 1:** Ухилення батьків або"
-        ' осіб, які їх замінюють, від виконання передбачених законодавством'
-        ' обов’язків щодо забезпечення необхідних умов життя, навчання та'
-        ' виховання неповнолітніх дітей.\n\n⚖️ **Приклад фабули за ч. 1 ст. 184'
-        ' КУпАП:**\n26.10.2025 о 10 год. 00хв. за адресою місто Харків вул. Грубника, 24, в приміщенні КЗ "Харківський ліцей №153" гр. (ПІБ)'
-    )
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
-
-# --- Запуск бота та веб-сервера ---
-
+# Запуск Telegram бота
 if __name__ == '__main__':
-    flask_thread = threading.Thread(target=run_flask)
-    flask_thread.daemon = True
-    flask_thread.start()
-
-    bot.infinity_polling(skip_pending=True)
+    while True:
+        try:
+            bot.polling(none_stop=True, interval=0, timeout=20)
+        except Exception as e:
+            print(f'❌ Помилка в роботі бота: {e}')
+            time.sleep(5)
