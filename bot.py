@@ -1091,6 +1091,45 @@ def smoking_part2_info(message):
     )
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
+# --- Виправлені обробники для ст. 173-2, ст. 184 та ст. 173 ---
+
+@bot.message_handler(
+    func=lambda message: bool(message.text) and 'ст. 173-2' in message.text
+)
+def art173_2_info(message):
+    text = (
+        "⚖️ **ст. 173-2 КУпАП — Вчинення домашнього насильства, насильства за ознакою статі, невиконання термінового заборонного припису або неповідомлення про місце свого тимчасового перебування**\n\n"
+        "📜 **Основні положення:**\n"
+        "• Домашнє насильство — це діяння (дії або бездіяльність) фізичного, психологічного, сексуального чи економічного характеру, що вчиняються між членами сім'ї.\n"
+        "• Повний алгоритм реагування ви можете знайти у розділі «🧠 Алгоритми» -> «🚨 Домашнє насильство»."
+    )
+    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+
+@bot.message_handler(
+    func=lambda message: bool(message.text) and ('ст. 184' in message.text or "Невиконання обов'язків" in message.text)
+)
+def art184_info(message):
+    text = (
+        "🚸 **ст. 184 КУпАП — Невиконання батьками або особами, що їх замінюють, обов'язків щодо виховання дітей**\n\n"
+        "📜 **Основні положення:**\n"
+        "• Ухилення батьків або осіб, які їх замінюють, від виконання передбачених законодавством обов'язків щодо забезпечення необхідних умов життя, навчання та виховання неповнолітніх дітей.\n"
+        "• Детальні алгоритми та фабули щодо складання матеріалів за ст. 184 КУпАП (зокрема ч. 1 та ч. 3) містяться в розділі «🧠 Алгоритми»."
+    )
+    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+
+@bot.message_handler(
+    func=lambda message: bool(message.text) and 'ст. 173' in message.text and '173-2' not in message.text and '173-4' not in message.text and '173-7' not in message.text
+)
+def art173_info(message):
+    text = (
+        "🤪 **ст. 173 КУпАП — Дрібне хуліганство**\n\n"
+        "📜 **Визначення:**\n"
+        "Нецензурна лайка в громадських місцях, образливе чіпляння до громадян та інші подібні дії, що порушують громадський порядок і спокій громадян.\n\n"
+        "⚖️ **Приклад фабули:**\n"
+        "<i>«25.05.2026 о 10 год. 00 хв. за адресою м. Харків, вул. Світла, буд. 2, гр. (ПІБ) перебуваючи в громадському місці, порушував громадський порядок та спокій громадян, а саме виражався нецензурною лайкою в бік перехожих, розмахував руками та на зауваження не реагував, чим вчинив дрібне хуліганство.»</i>"
+    )
+    bot.send_message(message.chat.id, text, parse_mode='HTML')
+
 # --- Алгоритми ---
 
 @bot.message_handler(
@@ -1539,126 +1578,17 @@ def doc_1245_info(message):
         reply_markup=markup,
     )
 
-@bot.message_handler(
-    func=lambda message: bool(message.text) and message.text == '🏛 Постанова № 70'
-)
-def doc_70_info(message):
-    markup = types.InlineKeyboardMarkup()
-    markup.add(
-        types.InlineKeyboardButton(
-            '🔗 Відкрити Постанову № 70',
-            url='https://zakon.rada.gov.ua/laws/show/70-2026-%D0%BF#Text',
-        )
-    )
-    bot.send_message(
-        message.chat.id,
-        '🏛 **Постанова КМУ № 70**',
-        parse_mode='Markdown',
-        reply_markup=markup,
-    )
-
-@bot.message_handler(
-    func=lambda message: bool(message.text)
-    and ('685' in message.text or '1013' in message.text)
-)
-def doc_685_1013_info(message):
-    markup = types.InlineKeyboardMarkup()
-    markup.add(
-        types.InlineKeyboardButton(
-            '🔗 Відкрити наказ № 685/1013',
-            url='https://zakon.rada.gov.ua/laws/show/z1131-24#Text',
-        )
-    )
-    bot.send_message(
-        message.chat.id,
-        '📋 **Спільний наказ МВС та МОН № 685/1013**',
-        parse_mode='Markdown',
-        reply_markup=markup,
-    )
-
-@bot.message_handler(
-    func=lambda message: bool(message.text) and '1395' in message.text
-)
-def doc_1395_info(message):
-    markup = types.InlineKeyboardMarkup()
-    markup.add(
-        types.InlineKeyboardButton(
-            '🔗 Відкрити Наказ № 1395',
-            url='https://zakon.rada.gov.ua/laws/show/z1540-24#Text',
-        )
-    )
-    bot.send_message(
-        message.chat.id,
-        '📋 **Наказ МВС України № 1395**',
-        parse_mode='Markdown',
-        reply_markup=markup,
-    )
-
-@bot.message_handler(
-    func=lambda message: bool(message.text) and message.text == '📋 Наказ № 1376'
-)
-def doc_1376_info(message):
-    markup = types.InlineKeyboardMarkup()
-    markup.add(
-        types.InlineKeyboardButton(
-            '🔗 Відкрити Наказ № 1376',
-            url='https://zakon.rada.gov.ua/laws/show/z1528-24#Text',
-        )
-    )
-    bot.send_message(
-        message.chat.id,
-        '📋 **Наказ МВС України № 1376**',
-        parse_mode='Markdown',
-        reply_markup=markup,
-    )
-
-@bot.message_handler(
-    func=lambda message: bool(message.text) and message.text == '📋 Наказ № 70'
-)
-def doc_order_70_info(message):
-    markup = types.InlineKeyboardMarkup()
-    markup.add(
-        types.InlineKeyboardButton(
-            '🔗 Відкрити Наказ № 70',
-            url='https://zakon.rada.gov.ua/laws/show/z0155-25#Text',
-        )
-    )
-    bot.send_message(
-        message.chat.id,
-        '📋 **Наказ МВС України № 70**',
-        parse_mode='Markdown',
-        reply_markup=markup,
-    )
-
-# --- РОЗДІЛ: ПРО БОТА ---
-
-@bot.message_handler(
-    func=lambda message: bool(message.text) and 'Про бота' in message.text
-)
-def handle_about_bot(message):
-    text = (
-        'ℹ️ **Про бота**\n\n'
-        'Цей бот створений як робочий помічник для інспекторів служби освітньої безпеки (СОБ).\n'
-        'Він містить актуальні алгоритми дій, приклади фабул адміністративних правопорушень за КУпАП, '
-        'посилання на щоденні звіти по навчальних закладах та швидкий доступ до нормативно-правової бази.\n\n'
-        '🛠 *Версія: 2.5 (Розширена)*'
-    )
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
-
-# --- Запуск бота та веб-сервера ---
+# --- Запуск бота ---
 
 if __name__ == '__main__':
-    # Запуск Flask-сервера в окремому потоці для Render/Railway (Keep-Alive)
     flask_thread = threading.Thread(target=run_flask)
     flask_thread.daemon = True
     flask_thread.start()
 
-    print('🤖 Бот успішно запущено та готовий до роботи!')
-    
-    # Нескінчений цикл опитування Telegram API з автоперепідключенням у разі збоїв
+    print('Бот успішно запущено!')
     while True:
         try:
             bot.polling(none_stop=True, interval=0, timeout=20)
         except Exception as e:
-            print(f'❌ Помилка в polling: {e}')
+            print(f'Помилка в polling: {e}')
             time.sleep(5)
