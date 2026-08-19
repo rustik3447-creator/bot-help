@@ -28,6 +28,9 @@ URL_ZZSO_MOBIL = "https://docs.google.com/forms/d/e/1FAIpQLSe_74oFERvLuLm9SIsiLG
 URL_ZZSO_KOROTYCH = "https://docs.google.com/forms/d/e/1FAIpQLSeiwliHwey-IzZOGwNR2d4Ehxf1ByZCatFkSnj8SsMOQz7_bg/viewform?usp=header"
 URL_ZZSO_DZHERELO = "https://docs.google.com/forms/d/e/1FAIpQLScQPXp8-MjZC1rRHQYfDSCiHL1129lHJhqq14bDCKlS7h_RuA/viewform?usp=header"
 
+# 🔗 ПОСИЛАННЯ НА ГООГЛ ФОРМИ ДЛЯ ЩОМІСЯЧНОГО ЗВІТУ
+URL_MONTHLY_ZZSO_48 = "https://docs.google.com/forms/d/e/1FAIpQLSfAOOs9El2wN0Zo65S7UJD2JOC81rHx_2E_iiTXSYPJHpIkhg/viewform"
+
 # 📋 Список особистих Telegram ID людей, які отримують тривожні SOS в приватні повідомлення:
 SOS_RECIPIENTS = [
     1014079912,  # Ваш ID
@@ -121,6 +124,12 @@ def get_daily_reports_inline():
     markup.add(types.InlineKeyboardButton("ЗЗСО Коротичанський ліцей", url=URL_ZZSO_KOROTYCH))
     markup.add(types.InlineKeyboardButton("ЗЗСО Джерело", url=URL_ZZSO_DZHERELO))
     return markup
+
+
+def get_monthly_reports_inline():
+   markup = types.InlineKeyboardMarkup(row_width=1)
+   markup.add(types.InlineKeyboardButton("ЗЗСО №48 (Місячний)", url=URL_MONTHLY_ZZSO_48))
+   return markup
 
 def get_art178_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
@@ -280,6 +289,17 @@ def handle_daily_reports_select(message):
         reply_markup=get_daily_reports_inline(),
         parse_mode='Markdown'
     )
+
+@bot.message_handler(
+    func=lambda message: bool(message.text) and 'Щомісячний звіт' in message.text
+ )
+def handle_monthly_reports_select(message):
+    bot.send_message(
+        message.chat.id,
+        '📅 **Оберіть ваш навчальний заклад (ЗЗСО) для подачі щомісячного звіту:**',
+        reply_markup=get_monthly_reports_inline(),
+        parse_mode='Markdown'
+   )
 
 # --- ОБРОБНИК SOS ---
 
