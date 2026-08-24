@@ -30,7 +30,7 @@ URL_ZZSO_DZHERELO = "https://docs.google.com/forms/d/e/1FAIpQLScQPXp8-MjZC1rRHQY
 
 # 🔗 ПОСИЛАННЯ НА ГООГЛ ФОРМИ ДЛЯ ЩОМІСЯЧНОГО ЗВІТУ
 URL_MONTHLY_ZZSO_48 = "https://docs.google.com/forms/d/e/1FAIpQLSfAOOs9El2wN0Zo65S7UJD2JOC81rHx_2E_iiTXSYPJHpIkhg/viewform"
-URL_ZZSO_3 = "https://docs.google.com/forms/d/e/1FAIpQLSeVamGpP9ZLbvKoZ4RX2lKo14Kd2pdtahK4w0vSkkDgKa4XPg/viewform"
+URL_MONTHLY_ZZSO_3 = "https://docs.google.com/forms/d/e/1FAIpQLSeVamGpP9ZLbvKoZ4RX2lKo14Kd2pdtahK4w0vSkkDgKa4XPg/viewform"
 
 # 📋 Список особистих Telegram ID людей, які отримують тривожні SOS в приватні повідомлення:
 SOS_RECIPIENTS = [
