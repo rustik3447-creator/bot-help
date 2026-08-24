@@ -43,7 +43,7 @@ URL_MONTHLY_ZZSO_153 = "https://docs.google.com/forms/d/e/1FAIpQLSc_3PtAUm46SJyL
 URL_MONTHLY_ZZSO_173 = "https://docs.google.com/forms/d/e/1FAIpQLSeXpeiir5uQOSDFph_OwNf31bMFvX9vuEX8WMtgUmW0KkYsSA/viewform"
 URL_MONTHLY_ZZSO_MOBIL = "https://docs.google.com/forms/d/e/1FAIpQLSc8iVkkPVOfP4CC_CTOsIpT1gihzhEVnB0HJAgRASTcivwYCw/viewform"
 URL_MONTHLY_ZZSO_KOROTYCH = "https://docs.google.com/forms/d/e/1FAIpQLSdP_t-0pGRmXIa9GKav93DSy4kTIj4OIG1PvzHH9Ai5HTBM8g/viewform"
-URL_ZZSO_DZHERELO = "https://docs.google.com/forms/d/e/1FAIpQLSdxASp3A42Rxa6sIpGM_VOQ-9ha6FctdLL_bznAAg-bPDFrjw/viewform"
+URL_MONTHLY_ZZSO_DZHERELO = "https://docs.google.com/forms/d/e/1FAIpQLSdxASp3A42Rxa6sIpGM_VOQ-9ha6FctdLL_bznAAg-bPDFrjw/viewform"
 
 
 # 📋 Список особистих Telegram ID людей, які отримують тривожні SOS в приватні повідомлення:
