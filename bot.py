@@ -31,19 +31,6 @@ URL_ZZSO_DZHERELO = "https://docs.google.com/forms/d/e/1FAIpQLScQPXp8-MjZC1rRHQY
 # 🔗 ПОСИЛАННЯ НА ГООГЛ ФОРМИ ДЛЯ ЩОМІСЯЧНОГО ЗВІТУ
 URL_MONTHLY_ZZSO_48 = "https://docs.google.com/forms/d/e/1FAIpQLSfAOOs9El2wN0Zo65S7UJD2JOC81rHx_2E_iiTXSYPJHpIkhg/viewform"
 URL_ZZSO_3 = "https://docs.google.com/forms/d/e/1FAIpQLSeVamGpP9ZLbvKoZ4RX2lKo14Kd2pdtahK4w0vSkkDgKa4XPg/viewform"
-URL_ZZSO_83 = "https://docs.google.com/forms/d/e/1FAIpQLSfiOXtKT1qZk9mQwVGpAyZI4x3KxdaHbShVYO5aysASNaJCdQ/viewform"
-URL_ZZSO_88 = "https://docs.google.com/forms/d/e/1FAIpQLScY1gR9om9urj_J7XtOtR7XzizfjBZszaNJGrJr-nCQ0yI4sA/viewform"
-URL_ZZSO_91 = "https://docs.google.com/forms/d/e/1FAIpQLSe8MuCCPbr-B0nw8ZzhIMpGsxMozlxVUxouKYqKG-RapbK9dA/viewform"
-URL_ZZSO_105 = "https://docs.google.com/forms/d/e/1FAIpQLSd1m0X2LhkmZP8b4R6S1s4XTniMr5r4pWNMkfeaEtOu5S7yDw/viewform"
-URL_ZZSO_107 = "https://docs.google.com/forms/d/e/1FAIpQLSfCQYdncqbJMIigWky-4Ot1WF9pXlxrFwyZWrW68K8PNhhg-w/viewform"
-URL_ZZSO_124 = "https://docs.google.com/forms/d/e/1FAIpQLSf2ozWkXEepr6sd8db8LCsL00uBm5WbPbNp00Z8x7TUCKk6Rw/viewform"
-URL_ZZSO_138 = "https://docs.google.com/forms/d/e/1FAIpQLSfBcjkwt6xJlsyY3oOBeFhhNIVHunll84RHYa3wyDcr7-gJZg/viewform"
-URL_ZZSO_152 = "https://docs.google.com/forms/d/e/1FAIpQLSdYuiy_MsPEMIOH3I_z2IBfnfI4EORej6Bsoafk__mhGidozQ/viewform"
-URL_ZZSO_153 = "https://docs.google.com/forms/d/e/1FAIpQLSc_3PtAUm46SJyLDw0hCWcKL9xd5k6dg2vhQAJp7whYzbR7-A/viewform"
-URL_ZZSO_173 = "https://docs.google.com/forms/d/e/1FAIpQLSeXpeiir5uQOSDFph_OwNf31bMFvX9vuEX8WMtgUmW0KkYsSA/viewform"
-URL_ZZSO_MOBIL = "https://docs.google.com/forms/d/e/1FAIpQLSc8iVkkPVOfP4CC_CTOsIpT1gihzhEVnB0HJAgRASTcivwYCw/viewform"
-URL_ZZSO_KOROTYCH = "https://docs.google.com/forms/d/e/1FAIpQLSdP_t-0pGRmXIa9GKav93DSy4kTIj4OIG1PvzHH9Ai5HTBM8g/viewform"
-URL_ZZSO_DZHERELO = "https://docs.google.com/forms/d/e/1FAIpQLSdxASp3A42Rxa6sIpGM_VOQ-9ha6FctdLL_bznAAg-bPDFrjw/viewform"
 
 # 📋 Список особистих Telegram ID людей, які отримують тривожні SOS в приватні повідомлення:
 SOS_RECIPIENTS = [
@@ -144,19 +131,6 @@ def get_monthly_reports_inline():
    markup = types.InlineKeyboardMarkup(row_width=1)
    markup.add(types.InlineKeyboardButton("ЗЗСО №48 (Місячний)", url=URL_MONTHLY_ZZSO_48))
    markup.add(types.InlineKeyboardButton("ЗЗСО №3 (Місячний)", url=URL_MONTHLY_ZZSO_3))
-   markup.add(types.InlineKeyboardButton("ЗЗСО №83 (Місячний)", url=URL_MONTHLY_ZZSO_83))
-   markup.add(types.InlineKeyboardButton("ЗЗСО №88 (Місячний)", url=URL_MONTHLY_ZZSO_88))
-   markup.add(types.InlineKeyboardButton("ЗЗСО №91 (Місячний)", url=URL_MONTHLY_ZZSO_91))
-   markup.add(types.InlineKeyboardButton("ЗЗСО №105 (Місячний)", url=URL_MONTHLY_ZZSO_105))
-   markup.add(types.InlineKeyboardButton("ЗЗСО №107 (Місячний)", url=URL_MONTHLY_ZZSO_107))
-   markup.add(types.InlineKeyboardButton("ЗЗСО №124 (Місячний)", url=URL_MONTHLY_ZZSO_124))
-   markup.add(types.InlineKeyboardButton("ЗЗСО №138 (Місячний)", url=URL_MONTHLY_ZZSO_138))
-   markup.add(types.InlineKeyboardButton("ЗЗСО №152 (Місячний)", url=URL_MONTHLY_ZZSO_152))
-   markup.add(types.InlineKeyboardButton("ЗЗСО №153 (Місячний)", url=URL_MONTHLY_ZZSO_153))
-   markup.add(types.InlineKeyboardButton("ЗЗСО №173 (Місячний)", url=URL_MONTHLY_ZZSO_173))
-   markup.add(types.InlineKeyboardButton("ЗЗСО Мобіль (Місячний)", url=URL_MONTHLY_ZZSO_MOBIL))
-   markup.add(types.InlineKeyboardButton("ЗЗСО Коротичанський ліцей (Місячний)", url=URL_MONTHLY_ZZSO_KOROTYCH))
-   markup.add(types.InlineKeyboardButton("ЗЗСО Джерело (Місячний)", url=URL_MONTHLY_ZZSO_DZHERELO))
    return markup
 
 def get_art178_menu():
