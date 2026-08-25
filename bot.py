@@ -27,6 +27,7 @@ URL_ZZSO_173 = "https://docs.google.com/forms/d/e/1FAIpQLScwt5Yj8vNVrAD5-5uJe1B6
 URL_ZZSO_MOBIL = "https://docs.google.com/forms/d/e/1FAIpQLSe_74oFERvLuLm9SIsiLGJklKeFr9RaJos4vZxEmSBjKMszeg/viewform?usp=header"
 URL_ZZSO_KOROTYCH = "https://docs.google.com/forms/d/e/1FAIpQLSeiwliHwey-IzZOGwNR2d4Ehxf1ByZCatFkSnj8SsMOQz7_bg/viewform?usp=header"
 URL_ZZSO_DZHERELO = "https://docs.google.com/forms/d/e/1FAIpQLScQPXp8-MjZC1rRHQYfDSCiHL1129lHJhqq14bDCKlS7h_RuA/viewform?usp=header"
+URL_ZZSO_24 = "https://docs.google.com/forms/d/e/1FAIpQLScxucjEcARxYxfz94uJzey20PoQp1LER1E_zh9CgtuGJ_gvXQ/viewform"
 
 # 🔗 ПОСИЛАННЯ НА ГООГЛ ФОРМИ ДЛЯ ЩОМІСЯЧНОГО ЗВІТУ
 URL_MONTHLY_ZZSO_48 = "https://docs.google.com/forms/d/e/1FAIpQLSfAOOs9El2wN0Zo65S7UJD2JOC81rHx_2E_iiTXSYPJHpIkhg/viewform"
@@ -44,6 +45,7 @@ URL_MONTHLY_ZZSO_173 = "https://docs.google.com/forms/d/e/1FAIpQLSeXpeiir5uQOSDF
 URL_MONTHLY_ZZSO_MOBIL = "https://docs.google.com/forms/d/e/1FAIpQLSc8iVkkPVOfP4CC_CTOsIpT1gihzhEVnB0HJAgRASTcivwYCw/viewform"
 URL_MONTHLY_ZZSO_KOROTYCH = "https://docs.google.com/forms/d/e/1FAIpQLSdP_t-0pGRmXIa9GKav93DSy4kTIj4OIG1PvzHH9Ai5HTBM8g/viewform"
 URL_MONTHLY_ZZSO_DZHERELO = "https://docs.google.com/forms/d/e/1FAIpQLSdxASp3A42Rxa6sIpGM_VOQ-9ha6FctdLL_bznAAg-bPDFrjw/viewform"
+URL_MONTHLY_ZZSO_24 = "https://docs.google.com/forms/d/e/1FAIpQLSe14bIsEbYXsO0Q0-GClmgBHihRHWaNa-DYCivnW7vMynONLQ/viewform"
 
 
 # 📋 Список особистих Telegram ID людей, які отримують тривожні SOS в приватні повідомлення:
@@ -138,6 +140,7 @@ def get_daily_reports_inline():
     markup.add(types.InlineKeyboardButton("ЗЗСО Мобіль", url=URL_ZZSO_MOBIL))
     markup.add(types.InlineKeyboardButton("ЗЗСО Коротичанський ліцей", url=URL_ZZSO_KOROTYCH))
     markup.add(types.InlineKeyboardButton("ЗЗСО Джерело", url=URL_ZZSO_DZHERELO))
+    markup.add(types.InlineKeyboardButton("ЗЗСО №24", url=URL_ZZSO_24))
     return markup
 
 
@@ -158,6 +161,7 @@ def get_monthly_reports_inline():
    markup.add(types.InlineKeyboardButton("ЗЗСО Мобіль (Місячний)", url=URL_MONTHLY_ZZSO_MOBIL))
    markup.add(types.InlineKeyboardButton("ЗЗСО Коротичанський ліцей (Місячний)", url=URL_MONTHLY_ZZSO_KOROTYCH))
    markup.add(types.InlineKeyboardButton("ЗЗСО Джерело (Місячний)", url=URL_MONTHLY_ZZSO_DZHERELO))
+   markup.add(types.InlineKeyboardButton("ЗЗСО №24 (Місячний)", url=URL_MONTHLY_ZZSO_24))
    return markup
 
 def get_art178_menu():
