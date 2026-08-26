@@ -198,7 +198,7 @@ def get_docs_menu():
     markup.add('🏛 Постанова № 1245', '🏛 Постанова № 70', '🏛 Постанова № 1513')
     markup.add('📋 Наказ № 663', '📋 Наказ № 1646')
     markup.add('📋 Наказ № 685/1013', '📋 Наказ № 1395')
-    markup.add('📋 Наказ № 1376', '📋 Наказ № 70')
+    markup.add('📋 Наказ № 1376', '📋 Наказ № 70', '📋 Наказ № 961')
     markup.add('🔙 Головне меню')
     return markup
 
@@ -1750,6 +1750,24 @@ def doc_70_order_info(message):
     bot.send_message(
         message.chat.id,
         '📋 **Наказ МВС України № 70**',
+        parse_mode='Markdown',
+        reply_markup=markup,
+    )
+
+@bot.message_handler(
+    func=lambda message: bool(message.text) and message.text == '📋 Наказ № 961'
+)
+def doc_70_order_info(message):
+    markup = types.InlineKeyboardMarkup()
+    markup.add(
+        types.InlineKeyboardButton(
+            '🔗 Відкрити Наказ № 961',
+            url='https://zakon.rada.gov.ua/laws/show/z1078-26#Text',
+        )
+    )
+    bot.send_message(
+        message.chat.id,
+        '📋 **Наказ МВС України № 961**',
         parse_mode='Markdown',
         reply_markup=markup,
     )
