@@ -195,7 +195,7 @@ def get_docs_menu():
     markup.add('⚖️ Сімейний кодекс', '👮 ЗУ Про Національну поліцію')
     markup.add('🎓 ЗУ Про освіту', '🏫 ЗУ Про загальну середню освіту')
     markup.add('👶 ЗУ Про охорону дитинства', '🏛 Постанова № 684')
-    markup.add('🏛 Постанова № 1245', '🏛 Постанова № 70')
+    markup.add('🏛 Постанова № 1245', '🏛 Постанова № 70', '🏛 Постанова № 1513')
     markup.add('📋 Наказ № 663', '📋 Наказ № 1646')
     markup.add('📋 Наказ № 685/1013', '📋 Наказ № 1395')
     markup.add('📋 Наказ № 1376', '📋 Наказ № 70')
@@ -1591,6 +1591,24 @@ def doc_684_info(message):
         reply_markup=markup,
     )
 
+@bot.message_handler(
+    func=lambda message: bool(message.text) and '1513' in message.text
+)
+def doc_684_info(message):
+    markup = types.InlineKeyboardMarkup()
+    markup.add(
+        types.InlineKeyboardButton(
+            '🔗 Відкрити Постанову № 1513',
+            url='https://zakon.rada.gov.ua/laws/show/1513-2025-%D0%BF#Text',
+        )
+    )
+    bot.send_message(
+        message.chat.id,
+        '🏛 **Постанова КМУ № 1513**',
+        parse_mode='Markdown',
+        reply_markup=markup,
+    )
+    
 @bot.message_handler(
     func=lambda message: bool(message.text) and '663' in message.text
 )
