@@ -329,7 +329,7 @@ def handle_daily_reports_select(message):
 def handle_monthly_reports_select(message):
     bot.send_message(
         message.chat.id,
-        '📅 **Оберіть ваш навчальний заклад (ЗЗСО) для подачі щомісячного звіту:**',
+        '📅 **(Форма "Для звіту ДПД" (щомісячний звіт) заповнюється щомісяця з 22 по 25 число.) Оберіть ваш навчальний заклад (ЗЗСО) для подачі щомісячного звіту:**',
         reply_markup=get_monthly_reports_inline(),
         parse_mode='Markdown'
    )
