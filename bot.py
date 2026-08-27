@@ -321,7 +321,7 @@ def back_to_main_menu(message):
 
 @bot.message_handler(
     func=lambda message: bool(message.text) and 'Звіти' in message.text
-
+)
     @bot.message_handler(
     func=lambda message: bool(message.text) and 'Забезпечення' in message.text
 )
