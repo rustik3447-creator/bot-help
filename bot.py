@@ -11,6 +11,9 @@ TOKEN = os.environ.get(
 )
 ADMIN_ID = 1014079912  # Ваш особистий Telegram ID
 
+# 🔗 ПОСИЛАННЯ НА ГООГЛ ФОРМУ ДЛЯ ГРАФІКА РОБОТИ ЗЗСО
+URL_WORK_SCHEDULE = "https://docs.google.com/forms/d/e/1FAIpQLSc35oLz6lB6l6jvJtDV30bRGwnMWF07osJuGJ0761XfYuDxig/viewform"
+
 # 🔗 ПОСИЛАННЯ НА ГООГЛ ФОРМИ ДЛЯ ЩОДЕННОГО ЗВІТУ
 URL_ZZSO_3 = "https://docs.google.com/forms/d/e/1FAIpQLSf7UMP606jWHYeo_AK3jJDQGgottGra_5RqBXUVvEC6ynSEsg/viewform?usp=sharing&ouid=113896150269870747135"
 URL_ZZSO_48 = "https://docs.google.com/forms/d/e/1FAIpQLScptL7an8je5Pf6JA1x1A7WzuvEfo4nLq62wGm_FtaK1Pvb7g/viewform?usp=sharing&ouid=113896150269870747135"
@@ -120,7 +123,13 @@ def get_reports_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
     markup.add('📅 Щоденний звіт')
     markup.add('📅 Щомісячний звіт')
+    markup.add('⏰ Графік роботи ЗЗСО')
     markup.add('🔙 Головне меню')
+    return markup
+
+def get_schedule_inline():
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    markup.add(types.InlineKeyboardButton("📝 Заповнити графік роботи ЗЗСО", url=URL_WORK_SCHEDULE))
     return markup
 
 def get_daily_reports_inline():
@@ -304,6 +313,24 @@ def back_to_main_menu(message):
 @bot.message_handler(
     func=lambda message: bool(message.text) and 'Звіти' in message.text
 )
+def handle_reports_section(message):
+    bot.send_message(
+        message.chat.id,
+        '📋 **Розділ подачі звітів та графіків**\nОберіть потрібну категорію:',
+        reply_markup=get_reports_menu(),
+        parse_mode='Markdown'
+    )
+
+@bot.message_handler(
+    func=lambda message: bool(message.text) and 'Графік роботи ЗЗСО' in message.text
+)
+def handle_schedule_select(message):
+    bot.send_message(
+        message.chat.id,
+        '⏰ **Перехід до заповнення/перегляду графіка роботи ЗЗСО:**',
+        reply_markup=get_schedule_inline(),
+        parse_mode='Markdown'
+    )
 def handle_reports_section(message):
     bot.send_message(
         message.chat.id,
