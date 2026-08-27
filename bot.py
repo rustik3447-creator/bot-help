@@ -11,6 +11,9 @@ TOKEN = os.environ.get(
 )
 ADMIN_ID = 1014079912  # Ваш особистий Telegram ID
 
+# 🔗 ПОСИЛАННЯ НА ГООГЛ ФОРМУ ДЛЯ ЗАБЕЗПЕЧЕННЯ
+URL_SECURITY = "https://docs.google.com/forms/d/e/1FAIpQLSciZpVL-Oqmv8AITmJ62tBT-_QzCDo1-7yuYUcZqCtrdXPBYQ/viewform"
+
 # 🔗 ПОСИЛАННЯ НА ГООГЛ ФОРМУ ДЛЯ ГРАФІКА РОБОТИ ЗЗСО
 URL_WORK_SCHEDULE = "https://docs.google.com/forms/d/e/1FAIpQLSc35oLz6lB6l6jvJtDV30bRGwnMWF07osJuGJ0761XfYuDxig/viewform"
 
@@ -124,7 +127,13 @@ def get_reports_menu():
     markup.add('📅 Щоденний звіт')
     markup.add('📅 Щомісячний звіт')
     markup.add('⏰ Графік роботи ЗЗСО')
+    markup.add('📦 ЗАБЕЗПЕЧЕННЯ')
     markup.add('🔙 Головне меню')
+    return markup
+
+def get_schedule_inline():
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    markup.add(types.InlineKeyboardButton("📦 Заповнити ЗАБЕЗПЕЧЕННЯ", url=URL_SECURITY))
     return markup
 
 def get_schedule_inline():
@@ -313,6 +322,24 @@ def back_to_main_menu(message):
 @bot.message_handler(
     func=lambda message: bool(message.text) and 'Звіти' in message.text
 )
+def handle_reports_section(message):
+    bot.send_message(
+        message.chat.id,
+        '📋 **Розділ подачі звітів забезпечення**\nОберіть потрібну категорію:',
+        reply_markup=get_reports_menu(),
+        parse_mode='Markdown'
+    )
+
+@bot.message_handler(
+    func=lambda message: bool(message.text) and 'Забезпечення' in message.text
+)
+def handle_schedule_select(message):
+    bot.send_message(
+        message.chat.id,
+        '📦 **(Форма "Забезпечення" заповнюється перед початком навчального року та оновлюється у випадку заміни, здачі отримання техніки (окрім Б/К).Перехід до заповнення/перегляду забезпечення:**',
+        reply_markup=get_schedule_inline(),
+        parse_mode='Markdown'
+    )
 def handle_reports_section(message):
     bot.send_message(
         message.chat.id,
