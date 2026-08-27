@@ -318,7 +318,7 @@ def handle_reports_section(message):
 def handle_daily_reports_select(message):
     bot.send_message(
         message.chat.id,
-        'ℹ️ *Форма "Щоденний звіт" заповнюється інспектором щоденно до 16 години.*\n',
+        'ℹ️ **Форма "Щоденний звіт" заповнюється інспектором щоденно до 16 години.**',
         '📅 **Оберіть ваш навчальний заклад (ЗЗСО) для подачі щоденного звіту:**',
         reply_markup=get_daily_reports_inline(),
         parse_mode='Markdown'
