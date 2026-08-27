@@ -327,7 +327,7 @@ def handle_reports_section(message):
 def handle_schedule_select(message):
     bot.send_message(
         message.chat.id,
-        '⏰ **Перехід до заповнення/перегляду графіка роботи ЗЗСО:**',
+        '⏰ **(Форма "Графік роботи ЗЗСО" заповнюється на початку кожної навчальної чверті та оновлюється, у випадку зміни графіку роботи ЗЗСО.)Перехід до заповнення/перегляду графіка роботи ЗЗСО:**',
         reply_markup=get_schedule_inline(),
         parse_mode='Markdown'
     )
