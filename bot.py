@@ -322,17 +322,24 @@ def back_to_main_menu(message):
 @bot.message_handler(
     func=lambda message: bool(message.text) and 'Звіти' in message.text
 )
-    @bot.message_handler(
-    func=lambda message: bool(message.text) and 'Забезпечення' in message.text
-)
-def handle_provision_select(message):
+def handle_reports_section(message):
     bot.send_message(
         message.chat.id,
-        '📦 **(Форма "Забезпечення" заповнюється перед початком навчального року та оновлюється у випадку заміни, здачі отримання техніки (окрім Б/К).Перехід до заповнення форми забезпечення:**',
-        reply_markup=get_provision_inline(),
+        '📋 **Розділ подачі звітів та графіків**\nОберіть потрібну категорію:',
+        reply_markup=get_reports_menu(),
         parse_mode='Markdown'
     )
 
+@bot.message_handler(
+    func=lambda message: bool(message.text) and 'Забезпечення' in message.text
+)
+def handle_schedule_select(message):
+    bot.send_message(
+        message.chat.id,
+       '📦 **(Форма "Забезпечення" заповнюється перед початком навчального року та оновлюється у випадку заміни, здачі отримання техніки (окрім Б/К).)Перехід до заповнення форми забезпечення:**',
+        reply_markup=get_schedule_inline(),
+        parse_mode='Markdown'
+    )
 def handle_reports_section(message):
     bot.send_message(
         message.chat.id,
